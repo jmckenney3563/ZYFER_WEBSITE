@@ -3,33 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZYFER Research & Documentation</title>
+  <title>ZYFER — Research & Documentation</title>
+  <meta name="description" content="Formal benchmarking methodology for multimodal deepfake detection performance. 15 KPIs across four detection modalities, grounded in NIST AI RMF 1.0 and ISO/IEC 42001." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --navy:      #0D2B4E;
-      --teal:      #0A7C8C;
-      --teal-dim:  #0A7C8C33;
-      --teal-glow: #0ee6ff22;
-      --ice:       #D6EFF2;
-      --slate:     #3A4F66;
-      --ghost:     #8BA3B8;
-      --bg:        #070F18;
-      --bg2:       #0C1825;
-      --bg3:       #101F2E;
-      --border:    #1A3148;
-      --text:      #C8DCE8;
-      --white:     #EEF6FA;
-      --accent:    #E8B400;
-      --accent-dim:#E8B40022;
-      --green:     #27C98F;
-      --mono:      'Space Mono', monospace;
-      --sans:      'DM Sans', sans-serif;
+      --navy:     #0D2B4E;
+      --teal:     #0A7C8C;
+      --teal-dim: rgba(10,124,140,0.18);
+      --ghost:    #7A96AD;
+      --bg:       #070F18;
+      --bg2:      #0C1825;
+      --bg3:      #111F2E;
+      --border:   #182B3E;
+      --text:     #B8D0DF;
+      --white:    #EEF6FA;
+      --accent:   #E8B400;
+      --green:    #27C98F;
+      --red:      #FF4D5E;
+      --mono:     'Space Mono', monospace;
+      --sans:     'DM Sans', sans-serif;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -41,1035 +38,897 @@
       overflow-x: hidden;
     }
 
-    /* ── SCANLINE OVERLAY ──────────────────────────────────────────────── */
+    /* scanline overlay */
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.07) 2px,
-        rgba(0,0,0,0.07) 4px
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
       );
-      pointer-events: none;
-      z-index: 9999;
+      pointer-events: none; z-index: 9999;
     }
 
-    /* ── NOISE TEXTURE ─────────────────────────────────────────────────── */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      opacity: 0.35;
-      z-index: 9998;
-    }
-
-    /* ── NAV ───────────────────────────────────────────────────────────── */
+    /* ── NAV ───────────────────────────────────────────────────────── */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 3rem;
-      height: 64px;
-      background: rgba(7,15,24,0.85);
-      backdrop-filter: blur(16px);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem; height: 64px;
+      background: rgba(7,15,24,0.9);
+      backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
     }
-
     .nav-logo {
-      font-family: var(--mono);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--white);
-      text-decoration: none;
-      letter-spacing: 0.12em;
+      font-family: var(--mono); font-size: 1.05rem; font-weight: 700;
+      color: var(--white); text-decoration: none; letter-spacing: 0.14em;
     }
-
     .nav-logo span { color: var(--teal); }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      color: var(--ghost);
-      text-decoration: none;
-      text-transform: uppercase;
+      font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em;
+      color: var(--ghost); text-decoration: none; text-transform: uppercase;
       transition: color 0.2s;
     }
-
     .nav-links a:hover { color: var(--teal); }
 
-    /* ── HERO ──────────────────────────────────────────────────────────── */
+    /* ── HERO ──────────────────────────────────────────────────────── */
     .hero {
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 120px 3rem 80px;
-      position: relative;
-      overflow: hidden;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 130px 3rem 90px;
+      position: relative; overflow: hidden;
     }
 
-    /* animated grid background */
     .hero-grid {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background-image:
         linear-gradient(var(--border) 1px, transparent 1px),
         linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 60px 60px;
-      opacity: 0.4;
-      animation: gridDrift 30s linear infinite;
+      background-size: 56px 56px;
+      opacity: 0.5;
+      animation: gridScroll 24s linear infinite;
     }
+    @keyframes gridScroll { to { background-position: 0 56px; } }
 
-    @keyframes gridDrift {
-      0%   { transform: translateY(0); }
-      100% { transform: translateY(60px); }
-    }
-
-    /* glowing orb */
     .hero-orb {
-      position: absolute;
-      top: 20%;
-      right: 8%;
-      width: 480px;
-      height: 480px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--teal-dim) 0%, transparent 70%);
-      animation: pulse 6s ease-in-out infinite;
+      position: absolute; top: 12%; right: 4%;
+      width: 540px; height: 540px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(10,124,140,0.17) 0%, transparent 68%);
+      animation: orbPulse 7s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes orbPulse {
+      0%,100% { transform: scale(1);    opacity: 0.7; }
+      50%      { transform: scale(1.14); opacity: 1;   }
     }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.6; }
-      50%       { transform: scale(1.12); opacity: 1; }
-    }
+    .hero-content { position: relative; z-index: 2; max-width: 800px; }
 
-    .hero-content { position: relative; z-index: 2; max-width: 760px; }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--teal);
-      border: 1px solid var(--teal);
-      padding: 0.35rem 0.9rem;
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--teal);
+      border: 1px solid var(--teal); padding: 0.3rem 0.85rem;
       margin-bottom: 2rem;
-      animation: fadeUp 0.6s ease both;
+      animation: fadeUp 0.5s ease both;
     }
-
-    .hero-tag::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--teal);
-      animation: blink 1.2s step-end infinite;
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal); animation: blink 1.3s step-end infinite;
     }
-
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
     .hero h1 {
       font-family: var(--mono);
-      font-size: clamp(2.8rem, 6vw, 5.2rem);
-      font-weight: 700;
-      color: var(--white);
-      line-height: 1.08;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.4rem;
-      animation: fadeUp 0.7s 0.1s ease both;
+      font-size: clamp(2.5rem, 5.2vw, 4.6rem);
+      font-weight: 700; color: var(--white);
+      line-height: 1.08; letter-spacing: -0.025em;
+      margin-bottom: 1rem;
+      animation: fadeUp 0.6s 0.08s ease both;
     }
+    .hero h1 .hl { color: var(--teal); }
 
-    .hero h1 em {
-      font-style: normal;
-      color: var(--teal);
-      position: relative;
+    .hero-mono {
+      font-family: var(--mono); font-size: 0.76rem;
+      color: var(--ghost); letter-spacing: 0.1em;
+      margin-bottom: 1.8rem;
+      animation: fadeUp 0.6s 0.16s ease both;
     }
-
-    .hero-sub {
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      color: var(--ghost);
-      letter-spacing: 0.08em;
-      margin-bottom: 2rem;
-      animation: fadeUp 0.7s 0.2s ease both;
-    }
-
     .hero-desc {
-      font-size: 1.05rem;
-      font-weight: 300;
-      color: var(--text);
-      max-width: 580px;
-      margin-bottom: 3rem;
-      animation: fadeUp 0.7s 0.3s ease both;
+      font-size: 1.03rem; font-weight: 300; color: var(--text);
+      max-width: 600px; margin-bottom: 3rem;
+      animation: fadeUp 0.6s 0.24s ease both;
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
+      from { opacity: 0; transform: translateY(22px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── STATS ROW ─────────────────────────────────────────────────────── */
-    .stats-row {
-      display: flex;
-      gap: 2.5rem;
+    /* stats row */
+    .stats {
+      display: flex; gap: 3rem; flex-wrap: wrap;
       margin-bottom: 3rem;
-      animation: fadeUp 0.7s 0.4s ease both;
-      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.32s ease both;
     }
-
-    .stat {
-      display: flex;
-      flex-direction: column;
-    }
-
     .stat-val {
-      font-family: var(--mono);
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--white);
-      line-height: 1;
+      font-family: var(--mono); font-size: 1.85rem;
+      font-weight: 700; color: var(--white); line-height: 1;
+    }
+    .stat-val em { font-style: normal; color: var(--teal); }
+    .stat-lbl {
+      font-family: var(--mono); font-size: 0.59rem;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--ghost); margin-top: 0.3rem;
     }
 
-    .stat-val span { color: var(--teal); }
-
-    .stat-label {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--ghost);
-      margin-top: 0.3rem;
-    }
-
-    /* ── DOWNLOAD CARD ─────────────────────────────────────────────────── */
+    /* download card */
     .dl-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+      background: var(--bg2); border: 1px solid var(--border);
       border-left: 3px solid var(--teal);
-      padding: 2rem 2.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
-      flex-wrap: wrap;
-      animation: fadeUp 0.7s 0.5s ease both;
-      position: relative;
-      overflow: hidden;
-      max-width: 760px;
+      padding: 1.9rem 2.3rem; max-width: 800px;
+      position: relative; overflow: hidden;
+      animation: fadeUp 0.6s 0.4s ease both;
     }
-
     .dl-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
       background: linear-gradient(90deg, var(--teal), transparent);
     }
-
-    .dl-card-info { flex: 1; min-width: 200px; }
-
-    .dl-card-title {
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ghost);
-      margin-bottom: 0.4rem;
+    .dl-tag {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ghost); margin-bottom: 0.35rem;
     }
-
-    .dl-card-name {
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 0.2rem;
-    }
-
-    .dl-card-meta {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      color: var(--ghost);
-    }
-
-    .dl-buttons {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
+    .dl-name { font-size: 0.98rem; font-weight: 600; color: var(--white); margin-bottom: 0.22rem; }
+    .dl-meta { font-family: var(--mono); font-size: 0.66rem; color: var(--ghost); }
+    .dl-btns { display: flex; gap: 0.7rem; flex-wrap: wrap; }
 
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      text-decoration: none;
-      padding: 0.65rem 1.3rem;
-      border: 1px solid;
-      transition: all 0.2s;
-      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: var(--mono); font-size: 0.66rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; padding: 0.6rem 1.2rem;
+      border: 1px solid; transition: all 0.22s; white-space: nowrap;
     }
+    .btn-primary { background: var(--teal); border-color: var(--teal); color: var(--bg); font-weight: 700; }
+    .btn-primary:hover { background: transparent; color: var(--teal); }
+    .btn-ghost { background: transparent; border-color: var(--border); color: var(--ghost); }
+    .btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+    .btn-sm { font-size: 0.58rem; padding: 0.38rem 0.85rem; }
 
-    .btn-primary {
-      background: var(--teal);
-      border-color: var(--teal);
-      color: var(--bg);
-      font-weight: 700;
-    }
-
-    .btn-primary:hover {
-      background: transparent;
-      color: var(--teal);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      border-color: var(--border);
-      color: var(--ghost);
-    }
-
-    .btn-ghost:hover {
-      border-color: var(--teal);
-      color: var(--teal);
-    }
-
-    /* ── SECTIONS ──────────────────────────────────────────────────────── */
-    section {
-      padding: 7rem 3rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .section-tag {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      font-family: var(--mono);
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      font-weight: 700;
-      color: var(--white);
-      line-height: 1.2;
-      margin-bottom: 1.5rem;
-    }
-
-    .section-desc {
-      font-size: 1rem;
-      font-weight: 300;
-      color: var(--text);
-      max-width: 640px;
-      margin-bottom: 3rem;
-    }
-
-    /* ── KPI GRID ──────────────────────────────────────────────────────── */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    .kpi-card {
-      background: var(--bg2);
-      padding: 1.8rem;
-      transition: background 0.2s;
-    }
-
-    .kpi-card:hover { background: var(--bg3); }
-
-    .kpi-domain {
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 0.6rem;
-    }
-
-    .kpi-name {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 1rem;
-      line-height: 1.3;
-    }
-
-    .kpi-thresholds {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-    }
-
-    .kpi-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .kpi-row-label {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--ghost);
-    }
-
-    .kpi-val {
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      font-weight: 700;
-    }
-
-    .kpi-val.target { color: var(--green); }
-    .kpi-val.baseline { color: var(--accent); }
-    .kpi-val.critical { color: #ff5566; }
-
-    /* ── MODALITY PANELS ───────────────────────────────────────────────── */
-    .modality-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    .modality-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s, transform 0.3s;
-    }
-
-    .modality-card:hover {
-      border-color: var(--teal);
-      transform: translateY(-3px);
-    }
-
-    .modality-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--teal), transparent);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s;
-    }
-
-    .modality-card:hover::after { transform: scaleX(1); }
-
-    .modality-badge {
-      display: inline-block;
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      padding: 0.25rem 0.6rem;
-      background: var(--teal-dim);
-      color: var(--teal);
-      border: 1px solid var(--teal);
-      margin-bottom: 1rem;
-    }
-
-    .modality-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 0.8rem;
-    }
-
-    .modality-desc {
-      font-size: 0.88rem;
-      color: var(--ghost);
-      line-height: 1.6;
-    }
-
-    /* ── TIMELINE ──────────────────────────────────────────────────────── */
-    .timeline {
-      position: relative;
-      padding-left: 3rem;
-    }
-
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 0.65rem;
-      top: 0; bottom: 0;
-      width: 1px;
-      background: linear-gradient(180deg, var(--teal), transparent);
-    }
-
-    .timeline-item {
-      position: relative;
-      margin-bottom: 3rem;
-    }
-
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -2.4rem;
-      top: 0.4rem;
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: var(--teal);
-      box-shadow: 0 0 12px var(--teal);
-    }
-
-    .timeline-phase {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 0.3rem;
-    }
-
-    .timeline-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 0.5rem;
-    }
-
-    .timeline-body {
-      font-size: 0.88rem;
-      color: var(--ghost);
-      line-height: 1.6;
-    }
-
-    .timeline-tag {
-      display: inline-block;
-      font-family: var(--mono);
-      font-size: 0.62rem;
-      padding: 0.2rem 0.55rem;
-      border: 1px solid var(--border);
-      color: var(--ghost);
-      margin-top: 0.6rem;
-    }
-
-    /* ── GOVERNANCE TABLE ──────────────────────────────────────────────── */
-    .gov-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 2rem;
-      font-size: 0.88rem;
-    }
-
-    .gov-table th {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--teal);
-      padding: 0.9rem 1.2rem;
-      text-align: left;
-      border-bottom: 1px solid var(--teal);
-    }
-
-    .gov-table td {
-      padding: 0.9rem 1.2rem;
-      color: var(--text);
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-    }
-
-    .gov-table tr:hover td { background: var(--bg3); }
-
-    .badge {
-      display: inline-block;
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      padding: 0.2rem 0.5rem;
-      border: 1px solid;
-    }
-
-    .badge-nist   { color: #7eb8ff; border-color: #7eb8ff33; background: #7eb8ff11; }
-    .badge-iso    { color: var(--green); border-color: #27c98f33; background: #27c98f11; }
-    .badge-soc    { color: var(--accent); border-color: #e8b40033; background: #e8b40011; }
-    .badge-hitl   { color: #c77dff; border-color: #c77dff33; background: #c77dff11; }
-
-    /* ── DIVIDER ───────────────────────────────────────────────────────── */
+    /* ── LAYOUT ────────────────────────────────────────────────────── */
     .divider {
       height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
       margin: 0 3rem;
     }
 
-    /* ── FOOTER ────────────────────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
+    .section {
+      padding: 6rem 3rem;
+      max-width: 1200px; margin: 0 auto;
     }
 
-    .footer-logo {
+    .sec-tag {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 0.85rem;
+    }
+    .sec-title {
       font-family: var(--mono);
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--white);
+      font-size: clamp(1.45rem, 2.6vw, 2.1rem);
+      font-weight: 700; color: var(--white);
+      line-height: 1.18; margin-bottom: 1.1rem;
+    }
+    .sec-desc {
+      font-size: 0.96rem; font-weight: 300; color: var(--text);
+      max-width: 640px; margin-bottom: 2.8rem;
     }
 
-    .footer-logo span { color: var(--teal); }
+    /* scroll reveal */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    footer p {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      color: var(--ghost);
+    /* ── TIMELINE ──────────────────────────────────────────────────── */
+    .timeline { position: relative; padding-left: 2.8rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: 0.52rem; top: 10px; bottom: 10px;
+      width: 1px; background: linear-gradient(180deg, var(--teal), transparent);
+    }
+    .t-item { position: relative; margin-bottom: 2.6rem; }
+    .t-item::before {
+      content: ''; position: absolute; left: -2.3rem; top: 0.45rem;
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--teal); box-shadow: 0 0 10px var(--teal);
+    }
+    .t-phase {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 0.28rem;
+    }
+    .t-title { font-size: 0.97rem; font-weight: 600; color: var(--white); margin-bottom: 0.45rem; }
+    .t-body  { font-size: 0.85rem; color: var(--ghost); line-height: 1.65; }
+    .t-chip {
+      display: inline-block; margin-top: 0.55rem;
+      font-family: var(--mono); font-size: 0.57rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.18rem 0.52rem; border: 1px solid var(--border); color: var(--ghost);
     }
 
-    /* ── PDF VIEWER SECTION ────────────────────────────────────────────── */
+    /* ── KPI GRID ──────────────────────────────────────────────────── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+      gap: 1px; background: var(--border); border: 1px solid var(--border);
+    }
+    .kpi-card {
+      background: var(--bg2); padding: 1.65rem;
+      transition: background 0.2s;
+    }
+    .kpi-card:hover { background: var(--bg3); }
+    .kpi-domain {
+      font-family: var(--mono); font-size: 0.57rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 0.5rem;
+    }
+    .kpi-name {
+      font-size: 0.88rem; font-weight: 600; color: var(--white);
+      line-height: 1.35; margin-bottom: 0.95rem;
+    }
+    .kpi-row {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 0.28rem;
+    }
+    .kpi-lbl {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--ghost);
+    }
+    .kv  { font-family: var(--mono); font-size: 0.75rem; font-weight: 700; }
+    .vg  { color: var(--green); }
+    .va  { color: var(--accent); }
+    .vr  { color: var(--red); }
+
+    /* ── MODALITY CARDS ────────────────────────────────────────────── */
+    .mod-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.4rem;
+    }
+    .mod-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 1.9rem; position: relative; overflow: hidden;
+      transition: border-color 0.28s, transform 0.28s;
+    }
+    .mod-card:hover { border-color: var(--teal); transform: translateY(-4px); }
+    .mod-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--teal), transparent);
+      transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
+    }
+    .mod-card:hover::after { transform: scaleX(1); }
+    .mod-badge {
+      display: inline-block; font-family: var(--mono);
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em;
+      padding: 0.2rem 0.52rem;
+      background: var(--teal-dim); color: var(--teal);
+      border: 1px solid var(--teal); margin-bottom: 0.95rem;
+    }
+    .mod-title { font-size: 0.94rem; font-weight: 600; color: var(--white); margin-bottom: 0.7rem; }
+    .mod-desc  { font-size: 0.83rem; color: var(--ghost); line-height: 1.62; }
+
+    /* ── SCORING RUBRIC ────────────────────────────────────────────── */
+    .rubric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+      gap: 1px; background: var(--border); border: 1px solid var(--border);
+    }
+    .rubric-card { background: var(--bg2); padding: 1.55rem; }
+    .r-dot {
+      width: 9px; height: 9px; border-radius: 50%; margin-bottom: 0.75rem;
+    }
+    .dot-green  { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .dot-yellow { background: #FACC15;      box-shadow: 0 0 8px #FACC15; }
+    .dot-orange { background: #F97316;      box-shadow: 0 0 8px #F97316; }
+    .dot-red    { background: var(--red);   box-shadow: 0 0 8px var(--red); }
+    .dot-blue   { background: #60A5FA;      box-shadow: 0 0 8px #60A5FA; }
+    .r-tier {
+      font-family: var(--mono); font-size: 0.66rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--white); margin-bottom: 0.45rem;
+    }
+    .r-action { font-size: 0.81rem; color: var(--ghost); line-height: 1.55; }
+
+    /* ── GOVERNANCE TABLE ──────────────────────────────────────────── */
+    .gov-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .gov-table th {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--teal); padding: 0.82rem 1.1rem; text-align: left;
+      border-bottom: 1px solid var(--teal);
+    }
+    .gov-table td {
+      padding: 0.88rem 1.1rem; color: var(--text);
+      border-bottom: 1px solid var(--border); vertical-align: top;
+    }
+    .gov-table tr:hover td { background: var(--bg3); }
+    .badge {
+      display: inline-block; font-family: var(--mono);
+      font-size: 0.57rem; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.17rem 0.46rem; border: 1px solid;
+      margin-right: 0.28rem; margin-bottom: 0.2rem; white-space: nowrap;
+    }
+    .b-nist { color: #7eb8ff; border-color: rgba(126,184,255,0.28); background: rgba(126,184,255,0.06); }
+    .b-iso  { color: var(--green); border-color: rgba(39,201,143,0.28); background: rgba(39,201,143,0.06); }
+    .b-soc  { color: var(--accent); border-color: rgba(232,180,0,0.28); background: rgba(232,180,0,0.06); }
+    .b-hitl { color: #c77dff; border-color: rgba(199,125,255,0.28); background: rgba(199,125,255,0.06); }
+
+    /* ── ADVERSARIAL TEST CARDS ────────────────────────────────────── */
+    .adv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1px; background: var(--border); border: 1px solid var(--border);
+    }
+    .adv-card {
+      background: var(--bg2); padding: 1.7rem;
+      transition: background 0.2s;
+    }
+    .adv-card:hover { background: var(--bg3); }
+    .adv-num {
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 0.5rem;
+    }
+    .adv-title { font-size: 0.9rem; font-weight: 600; color: var(--white); margin-bottom: 0.65rem; }
+    .adv-desc  { font-size: 0.82rem; color: var(--ghost); line-height: 1.6; }
+
+    /* ── PDF VIEWER ────────────────────────────────────────────────── */
     .viewer-wrap {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      overflow: hidden;
+      background: var(--bg2); border: 1px solid var(--border); overflow: hidden;
     }
-
     .viewer-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1.2rem;
-      background: var(--bg3);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.68rem 1.2rem; background: var(--bg3);
       border-bottom: 1px solid var(--border);
     }
+    .viewer-lbl {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--ghost);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .viewer-lbl::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--teal); animation: blink 1.4s step-end infinite;
+    }
+    .viewer-iframe { width: 100%; height: 860px; border: none; display: block; }
 
-    .viewer-bar-label {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--ghost);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    /* ── REFERENCES ────────────────────────────────────────────────── */
+    .ref-list { list-style: none; }
+    .ref-list li {
+      font-size: 0.85rem; color: var(--ghost); line-height: 1.65;
+      padding: 0.9rem 0 0.9rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .ref-list li::before {
+      content: '//'; position: absolute; left: 0;
+      font-family: var(--mono); font-size: 0.6rem; color: var(--teal);
+    }
+    .ref-list a { color: var(--teal); text-decoration: none; }
+    .ref-list a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.4rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: var(--mono); font-size: 0.9rem;
+      font-weight: 700; color: var(--white);
+    }
+    .footer-logo span { color: var(--teal); }
+    .footer-copy {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.08em; color: var(--ghost);
     }
 
-    .viewer-bar-label::before {
-      content: '';
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--teal);
-      animation: blink 1.4s step-end infinite;
-    }
-
-    .viewer-iframe {
-      width: 100%;
-      height: 860px;
-      border: none;
-      display: block;
-    }
-
-    /* ── SCROLL REVEAL ─────────────────────────────────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ── RESPONSIVE ────────────────────────────────────────────────────── */
+    /* ── RESPONSIVE ────────────────────────────────────────────────── */
     @media (max-width: 768px) {
       nav { padding: 0 1.5rem; }
       .nav-links { display: none; }
-      .hero, section { padding-left: 1.5rem; padding-right: 1.5rem; }
-      footer { padding: 2rem 1.5rem; }
+      .hero, .section { padding-left: 1.5rem; padding-right: 1.5rem; }
       .divider { margin: 0 1.5rem; }
+      footer { padding: 2rem 1.5rem; }
       .viewer-iframe { height: 480px; }
+      .stats { gap: 2rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a href="index.html" class="nav-logo">ZY<span>FER</span></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="#methodology">Methodology</a></li>
-      <li><a href="#kpis">KPIs</a></li>
-      <li><a href="#modalities">Modalities</a></li>
-      <li><a href="#governance">Governance</a></li>
-      <li><a href="docs.html">Docs</a></li>
-    </ul>
-  </nav>
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">ZY<span>FER</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="docs.html">Docs</a></li>
+    <li><a href="#methodology">Methodology</a></li>
+    <li><a href="#kpis">KPIs</a></li>
+    <li><a href="#modalities">Modalities</a></li>
+    <li><a href="#governance">Governance</a></li>
+    <li><a href="#viewer">Full Document</a></li>
+  </ul>
+</nav>
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-grid"></div>
-    <div class="hero-orb"></div>
-    <div class="hero-content">
-      <div class="hero-tag">Research Output // Version 1.0</div>
-      <h1>Research &amp;<br><em>Documentation</em></h1>
-      <p class="hero-sub">// Zero-Trust sYnthEtic Forensics Engine Reinforcement</p>
-      <p class="hero-desc">
-        Formal benchmarking methodology for multimodal deepfake detection performance — 
-        15 KPIs across four detection modalities, grounded in NIST AI RMF 1.0, ISO/IEC 42001, 
-        and ZYFER's responsible AI governance architecture.
-      </p>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orb"></div>
+  <div class="hero-content">
 
-      <div class="stats-row">
-        <div class="stat">
-          <span class="stat-val">15<span>&nbsp;KPIs</span></span>
-          <span class="stat-label">Defined &amp; Thresholded</span>
-        </div>
-        <div class="stat">
-          <span class="stat-val">4<span>&nbsp;Layers</span></span>
-          <span class="stat-label">Detection Modalities</span>
-        </div>
-        <div class="stat">
-          <span class="stat-val">&lt;50<span>ms</span></span>
-          <span class="stat-label">Target Latency</span>
-        </div>
-        <div class="stat">
-          <span class="stat-val">≥97<span>%</span></span>
-          <span class="stat-label">Target Accuracy</span>
-        </div>
+    <div class="eyebrow">
+      <span class="live-dot"></span>
+      Research Output &nbsp;//&nbsp; Version 1.0 &nbsp;//&nbsp; April 2026
+    </div>
+
+    <h1>Research &amp;<br><span class="hl">Documentation</span></h1>
+    <p class="hero-mono">// Zero-Trust sYnthEtic Forensics Engine Reinforcement</p>
+    <p class="hero-desc">
+      Formal benchmarking methodology for multimodal deepfake detection performance —
+      15 KPIs across four detection modalities, grounded in NIST AI RMF 1.0,
+      ISO/IEC 42001, and ZYFER's responsible AI governance architecture.
+    </p>
+
+    <div class="stats">
+      <div>
+        <div class="stat-val">15<em>&nbsp;KPIs</em></div>
+        <div class="stat-lbl">Defined &amp; Thresholded</div>
       </div>
-
-      <div class="dl-card">
-        <div class="dl-card-info">
-          <div class="dl-card-title">// Publication</div>
-          <div class="dl-card-name">Benchmarking Methodology for Multimodal Deepfake Detection Performance</div>
-          <div class="dl-card-meta">John McKenney &nbsp;·&nbsp; ZYFER Security Framework &nbsp;·&nbsp; April 2026 &nbsp;·&nbsp; v1.0</div>
-        </div>
-        <div class="dl-buttons">
-          <a href="docs/ZYFER_Benchmarking_Methodology.pdf" target="_blank" class="btn btn-primary">
-            &#9656; View PDF
-          </a>
-          <a href="docs/ZYFER_Benchmarking_Methodology.docx" download class="btn btn-ghost">
-            &#8595; Download DOCX
-          </a>
-        </div>
+      <div>
+        <div class="stat-val">4<em>&nbsp;Layers</em></div>
+        <div class="stat-lbl">Detection Modalities</div>
       </div>
+      <div>
+        <div class="stat-val">&lt;50<em>ms</em></div>
+        <div class="stat-lbl">Target Latency</div>
+      </div>
+      <div>
+        <div class="stat-val">&#8805;97<em>%</em></div>
+        <div class="stat-lbl">Target Accuracy</div>
+      </div>
+    </div>
 
+    <div class="dl-card">
+      <div>
+        <div class="dl-tag">// Publication</div>
+        <div class="dl-name">Benchmarking Methodology for Multimodal Deepfake Detection Performance</div>
+        <div class="dl-meta">John McKenney &nbsp;·&nbsp; ZYFER Security Framework &nbsp;·&nbsp; April 2026 &nbsp;·&nbsp; v1.0</div>
+      </div>
+      <div class="dl-btns">
+        <a href="docs/ZYFER_Benchmarking_Methodology.pdf" target="_blank" class="btn btn-primary">&#9656;&nbsp;View PDF</a>
+        <a href="docs/ZYFER_Benchmarking_Methodology.docx" download class="btn btn-ghost">&#8595;&nbsp;Download DOCX</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SECTION 1: METHODOLOGY -->
+<section class="section" id="methodology">
+  <div class="sec-tag">// Section 01</div>
+  <h2 class="sec-title reveal">Benchmarking<br>Methodology Overview</h2>
+  <p class="sec-desc reveal">
+    This methodology defines quantitative performance standards across all four of ZYFER's
+    analysis layers — Computer Vision, NLP &amp; Audio Forensics, Behavioral Biometrics,
+    and Network Metadata — plus a unified cross-modal fusion benchmark. It is integrated
+    directly into ZYFER's three-phase deployment roadmap.
+  </p>
+
+  <div class="timeline reveal">
+
+    <div class="t-item">
+      <div class="t-phase">// Phase 01 — Weeks 1–4</div>
+      <div class="t-title">Pilot Deployment Benchmarks</div>
+      <div class="t-body">Deploy to IT security staff and select executives. Establish baselines for all 15 KPIs under live conditions. Capture false alarm rates, inference latency distributions, and cross-modal consistency scores against known-authentic and known-synthetic sample sets.</div>
+      <span class="t-chip">Baseline Establishment</span>
+    </div>
+
+    <div class="t-item">
+      <div class="t-phase">// Phase 02 — Weeks 5–10</div>
+      <div class="t-title">Feedback &amp; Optimization Cycle</div>
+      <div class="t-body">Retrain models on pilot data. Run SHAP and LIME fairness audits across all demographic cohorts — race, gender, age group, accent profile. Optimize confidence thresholds to reduce FPR toward target tier. Bias delta KPIs must clear audit threshold before advancing to Phase 3.</div>
+      <span class="t-chip">Model Optimization</span>
+    </div>
+
+    <div class="t-item">
+      <div class="t-phase">// Phase 03 — Weeks 11–20</div>
+      <div class="t-title">Organization-Wide Scale-Up</div>
+      <div class="t-body">Full enterprise rollout with automated risk reporting and Human-in-the-Loop escalation protocols active. Benchmark cross-modal consistency at organizational scale. Validate SIEM integration and forensic log completeness under production load across AWS, Azure, and GCP.</div>
+      <span class="t-chip">Production Validation</span>
+    </div>
+
+    <div class="t-item">
+      <div class="t-phase">// Ongoing — Post Week 20</div>
+      <div class="t-title">Continuous Monitoring</div>
+      <div class="t-body">Quarterly adversarial retraining cycles, model drift detection, and demographic bias re-audits. Annual governance framework review aligned to NIST AI RMF and ISO/IEC 42001. Dataset refresh to incorporate samples from newly released generative models.</div>
+      <span class="t-chip">Operational Continuity</span>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 2: KPI SCORECARD -->
+<section class="section" id="kpis">
+  <div class="sec-tag">// Section 02</div>
+  <h2 class="sec-title reveal">15-KPI Master Scorecard</h2>
+  <p class="sec-desc reveal">
+    Every KPI specifies a baseline threshold (minimum acceptable performance), a target
+    threshold (operational excellence), and a critical fail threshold that triggers
+    automated suspension and mandatory human review.
+  </p>
+
+  <div class="kpi-grid reveal">
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Detection Performance</div>
+      <div class="kpi-name">Overall Detection Accuracy</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8805; 97%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8805; 92%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&lt; 85%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Detection Performance</div>
+      <div class="kpi-name">False Positive Rate (FPR)</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8804; 2%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8804; 5%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&gt; 8%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Detection Performance</div>
+      <div class="kpi-name">False Negative Rate (FNR)</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8804; 3%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8804; 8%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&gt; 12%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Real-Time Performance</div>
+      <div class="kpi-name">End-to-End Inference Latency</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8804; 50ms</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8804; 100ms</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&gt; 200ms</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Computer Vision</div>
+      <div class="kpi-name">Video Deepfake Detection Rate</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8805; 98%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8805; 93%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&lt; 87%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Computer Vision</div>
+      <div class="kpi-name">Facial Landmark Consistency Score</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8805; 96%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8805; 90%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&lt; 82%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">NLP / Audio Forensics</div>
+      <div class="kpi-name">Voice Deepfake Detection Rate</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8805; 97%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8805; 91%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&lt; 84%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">NLP / Audio Forensics</div>
+      <div class="kpi-name">Spectral Anomaly Detection Accuracy</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8805; 95%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8805; 89%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&lt; 80%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Behavioral Analytics</div>
+      <div class="kpi-name">Behavioral Biometric Deviation Score</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8805; 94%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8805; 87%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&lt; 78%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Network Analysis</div>
+      <div class="kpi-name">Network Metadata Anomaly Detection</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8805; 95%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8805; 88%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&lt; 79%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Multimodal Fusion</div>
+      <div class="kpi-name">Cross-Modal Consistency Score</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8805; 96%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8805; 90%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&lt; 82%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Fairness Audit</div>
+      <div class="kpi-name">Demographic Bias Delta (FPR &amp; FNR)</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8804; 1%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8804; 3%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Audit Trigger</span><span class="kv vr">&gt; 5%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Governance</div>
+      <div class="kpi-name">Model Explainability Coverage (SHAP)</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">100%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8805; 95%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&lt; 90%</span></div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-domain">Governance</div>
+      <div class="kpi-name">HITL Escalation Accuracy</div>
+      <div class="kpi-row"><span class="kpi-lbl">Target</span><span class="kv vg">&#8805; 97%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Baseline</span><span class="kv va">&#8805; 90%</span></div>
+      <div class="kpi-row"><span class="kpi-lbl">Critical Fail</span><span class="kv vr">&lt; 80%</span></div>
+    </div>
+
+    <div class="kpi-card" style="display:flex;align-items:center;justify-content:center;background:var(--bg);">
+      <span style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--border);">v1.0 — 14 KPIs Illustrated</span>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 3: MODALITIES -->
+<section class="section" id="modalities">
+  <div class="sec-tag">// Section 03</div>
+  <h2 class="sec-title reveal">Detection Modalities</h2>
+  <p class="sec-desc reveal">
+    ZYFER benchmarks each detection layer independently before validating cross-modal
+    fusion. No single modality is sufficient — the system's integrity depends on all
+    four operating within threshold simultaneously.
+  </p>
+  <div class="mod-grid reveal">
+    <div class="mod-card">
+      <div class="mod-badge">CV</div>
+      <div class="mod-title">Computer Vision</div>
+      <div class="mod-desc">CNN and vision transformer analysis of facial biometrics, micro-expression consistency, gaze and blink patterns, landmark geometry, and frame-level compression artifacts. Benchmarked against GAN face-swaps, lip-sync injection, and adversarial landmark correction attacks per Javed et al. (2025).</div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-badge">NLP</div>
+      <div class="mod-title">NLP &amp; Audio Forensics</div>
+      <div class="mod-desc">Spectral energy distribution analysis, prosody and cadence evaluation, acoustic timbre fingerprinting, and conversational manipulation detection. Covers voice cloning, TTS artifacts, and voice conversion attacks across diverse accent and demographic profiles per Zhang et al. (2025).</div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-badge">BEH</div>
+      <div class="mod-title">Behavioral Biometrics</div>
+      <div class="mod-desc">Keystroke dynamics, interaction pacing, decision-making urgency patterns, and social engineering linguistic cue detection. Evaluated against automated agent simulations and expert human social engineering scenarios targeting manufactured urgency and authority exploitation patterns.</div>
+    </div>
+    <div class="mod-card">
+      <div class="mod-badge">NET</div>
+      <div class="mod-title">Network Metadata</div>
+      <div class="mod-desc">IP origin pattern analysis, latency spike signatures consistent with synthetic media streaming, compression artifact profiles, and abnormal packet structures. Benchmarked against curated datasets of known deepfake delivery infrastructure signatures and spoofed connection indicators.</div>
     </div>
   </div>
+</section>
 
-  <div class="divider"></div>
+<div class="divider"></div>
 
-  <!-- METHODOLOGY OVERVIEW -->
-  <section id="methodology">
-    <div class="section-tag">// Section 01</div>
-    <h2 class="section-title reveal">Benchmarking<br>Methodology Overview</h2>
-    <p class="section-desc reveal">
-      This methodology defines quantitative performance standards for ZYFER's multimodal detection engine 
-      across all four analysis layers — Computer Vision, NLP &amp; Audio Forensics, Behavioral Biometrics, 
-      and Network Metadata — with a unified cross-modal fusion benchmark.
-    </p>
+<!-- SECTION 4: SCORING RUBRIC -->
+<section class="section" id="scoring">
+  <div class="sec-tag">// Section 04</div>
+  <h2 class="sec-title reveal">Scoring Rubric &amp; Alert Protocol</h2>
+  <p class="sec-desc reveal">
+    All KPI results map to a five-tier scoring system. Each tier triggers a specific
+    operational response, ensuring detection quality degradation is addressed before
+    reaching user-facing impact.
+  </p>
+  <div class="rubric-grid reveal">
+    <div class="rubric-card">
+      <div class="r-dot dot-green"></div>
+      <div class="r-tier">Exceeds Target</div>
+      <div class="r-action">KPI meets or exceeds target threshold across all demographic cohorts. No corrective action required.</div>
+    </div>
+    <div class="rubric-card">
+      <div class="r-dot dot-yellow"></div>
+      <div class="r-tier">Meets Baseline</div>
+      <div class="r-action">KPI meets baseline but has not reached target. Optimization recommended within 30 days.</div>
+    </div>
+    <div class="rubric-card">
+      <div class="r-dot dot-orange"></div>
+      <div class="r-tier">Below Baseline</div>
+      <div class="r-action">KPI falls between baseline and critical fail. Escalate to retraining team. HITL mandatory for all detections.</div>
+    </div>
+    <div class="rubric-card">
+      <div class="r-dot dot-red"></div>
+      <div class="r-tier">Critical Fail</div>
+      <div class="r-action">KPI breaches critical threshold. Automated actions suspended. Immediate human override required. Incident report filed.</div>
+    </div>
+    <div class="rubric-card">
+      <div class="r-dot dot-blue"></div>
+      <div class="r-tier">Audit Required</div>
+      <div class="r-action">Demographic bias delta exceeds tolerance. Full SHAP/LIME audit triggered. Deployment paused for affected cohort.</div>
+    </div>
+  </div>
+</section>
 
-    <div class="timeline reveal">
-      <div class="timeline-item">
-        <div class="timeline-phase">// Phase 01 — Weeks 1–4</div>
-        <div class="timeline-title">Pilot Deployment Benchmarks</div>
-        <div class="timeline-body">Deploy to IT security staff and select executives. Establish baselines for all 15 KPIs under live conditions. Capture false alarm rates, inference latency distributions, and cross-modal consistency scores.</div>
-        <span class="timeline-tag">Baseline Establishment</span>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-phase">// Phase 02 — Weeks 5–10</div>
-        <div class="timeline-title">Feedback &amp; Optimization Cycle</div>
-        <div class="timeline-body">Retrain models on pilot data. Run SHAP/LIME fairness audits across all demographic cohorts. Optimize confidence thresholds to reduce FPR toward target tier. Validate bias delta KPIs before advancing.</div>
-        <span class="timeline-tag">Model Optimization</span>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-phase">// Phase 03 — Weeks 11–20</div>
-        <div class="timeline-title">Organization-Wide Scale-Up</div>
-        <div class="timeline-body">Full enterprise rollout with automated risk reporting and HITL escalation protocols active. Benchmark cross-modal consistency at organizational scale with SIEM integration.</div>
-        <span class="timeline-tag">Production Validation</span>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-phase">// Ongoing — Post Week 20</div>
-        <div class="timeline-title">Continuous Monitoring</div>
-        <div class="timeline-body">Quarterly adversarial retraining cycles, model drift detection, demographic bias re-audits, and annual governance framework review aligned to NIST AI RMF and ISO/IEC 42001.</div>
-        <span class="timeline-tag">Operational Continuity</span>
+<div class="divider"></div>
+
+<!-- SECTION 5: ADVERSARIAL TEST PROTOCOLS -->
+<section class="section" id="adversarial">
+  <div class="sec-tag">// Section 05</div>
+  <h2 class="sec-title reveal">Adversarial Test Protocols</h2>
+  <p class="sec-desc reveal">
+    ZYFER's reinforcement learning architecture requires benchmarking under adversarial
+    conditions to validate model robustness against the two primary attack vectors in
+    its threat model: data poisoning and model evasion.
+  </p>
+  <div class="adv-grid reveal">
+    <div class="adv-card">
+      <div class="adv-num">// Protocol 01</div>
+      <div class="adv-title">Data Poisoning Resistance</div>
+      <div class="adv-desc">Injection of mislabeled synthetic samples into the test batch at defined ratios. Measures detection accuracy degradation under deliberate training data corruption — a primary supply chain attack vector for enterprise AI systems.</div>
+    </div>
+    <div class="adv-card">
+      <div class="adv-num">// Protocol 02</div>
+      <div class="adv-title">Model Evasion Resistance</div>
+      <div class="adv-desc">GAN-generated samples specifically optimized to defeat ZYFER's published detection patterns. Validates that the model cannot be reverse-engineered by an adversary with knowledge of the detection architecture.</div>
+    </div>
+    <div class="adv-card">
+      <div class="adv-num">// Protocol 03</div>
+      <div class="adv-title">Cross-Modal Spoofing</div>
+      <div class="adv-desc">Authentic video paired with synthetic audio, and vice versa, to test the fusion layer's ability to disambiguate mismatched modality signals. Validates the core ZYFER thesis that no single modality is sufficient for reliable detection.</div>
+    </div>
+    <div class="adv-card">
+      <div class="adv-num">// Protocol 04</div>
+      <div class="adv-title">Temporal Consistency Attacks</div>
+      <div class="adv-desc">Deepfake video with artificially corrected landmark geometry designed to defeat Computer Vision layer analysis. Tests whether CV-layer evasion propagates through the correlation engine or is caught by NLP and behavioral signal divergence.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 6: GOVERNANCE ALIGNMENT -->
+<section class="section" id="governance">
+  <div class="sec-tag">// Section 06</div>
+  <h2 class="sec-title reveal">Governance Framework Alignment</h2>
+  <p class="sec-desc reveal">
+    Every KPI maps directly to the Measure and Manage functions of the NIST AI RMF 1.0
+    and the audit requirements of ISO/IEC 42001:2023. This benchmarking methodology
+    is the evidence layer for ZYFER's compliance posture.
+  </p>
+  <table class="gov-table reveal">
+    <thead>
+      <tr>
+        <th>Governance Requirement</th>
+        <th>Framework</th>
+        <th>ZYFER KPI Mapping</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Quantitative AI system risk measurement</td>
+        <td><span class="badge b-nist">NIST RMF – Measure</span></td>
+        <td>All 15 KPIs with defined thresholds</td>
+      </tr>
+      <tr>
+        <td>Risk treatment and model improvement triggers</td>
+        <td><span class="badge b-nist">NIST RMF – Manage</span></td>
+        <td>5-tier scoring rubric and alert protocols</td>
+      </tr>
+      <tr>
+        <td>Documented AI policy objectives and audit trails</td>
+        <td><span class="badge b-iso">ISO/IEC 42001</span></td>
+        <td>SHAP Coverage KPI; HITL Escalation Accuracy</td>
+      </tr>
+      <tr>
+        <td>Demographic fairness and equitable performance</td>
+        <td><span class="badge b-nist">NIST RMF</span><span class="badge b-iso">ISO/IEC 42001</span></td>
+        <td>Demographic Bias Delta KPIs (FPR &amp; FNR)</td>
+      </tr>
+      <tr>
+        <td>Human oversight for high-stakes automated decisions</td>
+        <td><span class="badge b-hitl">HITL Policy</span><span class="badge b-nist">NIST Govern</span></td>
+        <td>HITL Escalation Accuracy; Critical Fail protocol</td>
+      </tr>
+      <tr>
+        <td>SOC 2 Type II operational controls evidence</td>
+        <td><span class="badge b-soc">SOC 2 Type II</span></td>
+        <td>Audit log completeness; SHAP Coverage KPI</td>
+      </tr>
+      <tr>
+        <td>Continuous improvement and retraining cycles</td>
+        <td><span class="badge b-iso">ISO/IEC 42001</span><span class="badge b-nist">NIST Manage</span></td>
+        <td>Adversarial test protocol; quarterly dataset refresh</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 7: FULL DOCUMENT VIEWER -->
+<section class="section" id="viewer">
+  <div class="sec-tag">// Full Document</div>
+  <h2 class="sec-title reveal">Read the Full Methodology</h2>
+  <p class="sec-desc reveal">
+    The complete formal benchmarking methodology — including all KPI definitions, measurement
+    protocols, adversarial test procedures, dataset requirements, and reporting artifacts —
+    is embedded below. Open full screen or download for offline reference.
+  </p>
+
+  <div class="viewer-wrap reveal">
+    <div class="viewer-bar">
+      <span class="viewer-lbl">ZYFER_Benchmarking_Methodology.pdf</span>
+      <div class="dl-btns">
+        <a href="docs/ZYFER_Benchmarking_Methodology.pdf" target="_blank" class="btn btn-primary btn-sm">&#9656;&nbsp;Open Full Screen</a>
+        <a href="docs/ZYFER_Benchmarking_Methodology.docx" download class="btn btn-ghost btn-sm">&#8595;&nbsp;DOCX</a>
       </div>
     </div>
-  </section>
+    <iframe
+      class="viewer-iframe"
+      src="https://view.officeapps.live.com/op/embed.aspx?src=https://jmckenney3563.github.io/ZYFER_WEBSITE/docs/ZYFER_Benchmarking_Methodology.docx"
+      title="ZYFER Benchmarking Methodology Document Viewer">
+    </iframe>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<div class="divider"></div>
 
-  <!-- KPI GRID -->
-  <section id="kpis">
-    <div class="section-tag">// Section 02</div>
-    <h2 class="section-title reveal">15-KPI Master Scorecard</h2>
-    <p class="section-desc reveal">
-      Every KPI specifies a baseline threshold (minimum acceptable performance), a target threshold 
-      (operational excellence), and a critical fail threshold that triggers automated suspension and 
-      mandatory human review.
-    </p>
+<!-- SECTION 8: REFERENCES -->
+<section class="section" id="references">
+  <div class="sec-tag">// References</div>
+  <h2 class="sec-title reveal">Citations</h2>
+  <ul class="ref-list reveal">
+    <li>Javed, M., Zhang, Z., Dahri, F.H., Laghari, A.A., Krajčík, M. et al. (2025). Real-Time Deepfake Detection via Gaze and Blink Patterns: A Transformer Framework. <em>Computers, Materials &amp; Continua</em>, 85(1), 1457–1493. <a href="https://doi.org/10.32604/cmc.2025.062954" target="_blank">doi:10.32604/cmc.2025.062954</a></li>
+    <li>Zhang, B., Cui, H., Nguyen, V., &amp; Whitty, M. (2025). Audio deepfake detection: What has been achieved and what lies ahead. <em>Sensors</em>, 25(7), 1989. <a href="https://doi.org/10.3390/s25071989" target="_blank">doi:10.3390/s25071989</a></li>
+    <li>Tabassi, E. (2023). Artificial intelligence risk management framework (AI RMF 1.0). National Institute of Standards and Technology. <a href="https://doi.org/10.6028/NIST.AI.100-1" target="_blank">doi:10.6028/NIST.AI.100-1</a></li>
+    <li>Chu, C.H., Donato-Woodger, S., Khan, S.S. et al. (2023). Age-related bias and artificial intelligence: a scoping review. <em>Humanities and Social Sciences Communications</em>, 10(1). <a href="https://doi.org/10.1057/s41599-023-01999-y" target="_blank">doi:10.1057/s41599-023-01999-y</a></li>
+    <li>McKenney, J. (2025). ZYFER — Zero-Trust sYnthEtic Forensics Engine Reinforcement: Problem Statement and Solution Requirements. ZYFER Security Framework Initiative.</li>
+    <li>McKenney, J. (2026). ZYFER Documentation. <a href="https://jmckenney3563.github.io/ZYFER_WEBSITE/docs.html" target="_blank">jmckenney3563.github.io/ZYFER_WEBSITE/docs.html</a></li>
+  </ul>
+</section>
 
-    <div class="kpi-grid reveal">
+<div class="divider"></div>
 
-      <div class="kpi-card">
-        <div class="kpi-domain">Detection Performance</div>
-        <div class="kpi-name">Overall Detection Accuracy</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≥ 97%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≥ 92%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&lt; 85%</span></div>
-        </div>
-      </div>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ZY<span>FER</span></div>
+  <p class="footer-copy">Zero-Trust sYnthEtic Forensics Engine Reinforcement &nbsp;·&nbsp; &copy; 2026 ZYFER Security Solutions</p>
+  <div class="dl-btns">
+    <a href="index.html" class="btn btn-ghost btn-sm">Home</a>
+    <a href="docs.html"  class="btn btn-ghost btn-sm">Docs</a>
+  </div>
+</footer>
 
-      <div class="kpi-card">
-        <div class="kpi-domain">Detection Performance</div>
-        <div class="kpi-name">False Positive Rate (FPR)</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≤ 2%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≤ 5%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&gt; 8%</span></div>
-        </div>
-      </div>
+<!-- SCROLL REVEAL -->
+<script>
+  const io = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.08 }
+  );
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
 
-      <div class="kpi-card">
-        <div class="kpi-domain">Detection Performance</div>
-        <div class="kpi-name">False Negative Rate (FNR)</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≤ 3%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≤ 8%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&gt; 12%</span></div>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-domain">Real-Time Performance</div>
-        <div class="kpi-name">End-to-End Inference Latency</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≤ 50ms</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≤ 100ms</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&gt; 200ms</span></div>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-domain">Computer Vision</div>
-        <div class="kpi-name">Video Deepfake Detection Rate</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≥ 98%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≥ 93%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&lt; 87%</span></div>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-domain">Computer Vision</div>
-        <div class="kpi-name">Facial Landmark Consistency Score</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≥ 96%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≥ 90%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&lt; 82%</span></div>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-domain">NLP / Audio Forensics</div>
-        <div class="kpi-name">Voice Deepfake Detection Rate</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≥ 97%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≥ 91%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&lt; 84%</span></div>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-domain">NLP / Audio Forensics</div>
-        <div class="kpi-name">Spectral Anomaly Detection Accuracy</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≥ 95%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≥ 89%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&lt; 80%</span></div>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-domain">Behavioral Analytics</div>
-        <div class="kpi-name">Behavioral Biometric Deviation Score</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≥ 94%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≥ 87%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&lt; 78%</span></div>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-domain">Network Analysis</div>
-        <div class="kpi-name">Network Metadata Anomaly Detection</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≥ 95%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≥ 88%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&lt; 79%</span></div>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-domain">Multimodal Fusion</div>
-        <div class="kpi-name">Cross-Modal Consistency Score</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≥ 96%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≥ 90%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&lt; 82%</span></div>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-domain">Fairness Audit</div>
-        <div class="kpi-name">Demographic Bias Delta (FPR &amp; FNR)</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≤ 1%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≤ 3%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Audit Trigger</span><span class="kpi-val critical">&gt; 5%</span></div>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-domain">Governance</div>
-        <div class="kpi-name">Model Explainability Coverage (SHAP)</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">100%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≥ 95%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&lt; 90%</span></div>
-        </div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-domain">Governance</div>
-        <div class="kpi-name">HITL Escalation Accuracy</div>
-        <div class="kpi-thresholds">
-          <div class="kpi-row"><span class="kpi-row-label">Target</span><span class="kpi-val target">≥ 97%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Baseline</span><span class="kpi-val baseline">≥ 90%</span></div>
-          <div class="kpi-row"><span class="kpi-row-label">Critical Fail</span><span class="kpi-val critical">&lt; 80%</span></div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- MODALITIES -->
-  <section id="modalities">
-    <div class="section-tag">// Section 03</div>
-    <h2 class="section-title reveal">Detection Modalities</h2>
-    <p class="section-desc reveal">
-      ZYFER benchmarks each detection layer independently before validating cross-modal fusion. 
-      No single modality is sufficient — the system's integrity depends on all four operating 
-      within threshold simultaneously.
-    </p>
-    <div class="modality-grid reveal">
-      <div class="modality-card">
-        <div class="modality-badge">CV</div>
-        <div class="modality-title">Computer Vision</div>
-        <div class="modality-desc">CNN and vision transformer analysis of facial biometrics, micro-expression consistency, gaze and blink patterns, landmark geometry, and frame-level compression artifacts. Benchmarked against GAN face-swaps, lip-sync injection, and adversarial landmark correction attacks.</div>
-      </div>
-      <div class="modality-card">
-        <div class="modality-badge">NLP</div>
-        <div class="modality-title">NLP &amp; Audio Forensics</div>
-        <div class="modality-desc">Spectral energy distribution analysis, prosody and cadence evaluation, acoustic timbre fingerprinting, and conversational manipulation detection. Covers voice cloning, TTS artifacts, and voice conversion attacks across diverse accent and demographic profiles.</div>
-      </div>
-      <div class="modality-card">
-        <div class="modality-badge">BEH</div>
-        <div class="modality-title">Behavioral Biometrics</div>
-        <div class="modality-desc">Keystroke dynamics, interaction pacing, decision-making urgency patterns, and social engineering linguistic cue detection. Evaluated against both automated agent simulations and expert human social engineering scenarios.</div>
-      </div>
-      <div class="modality-card">
-        <div class="modality-badge">NET</div>
-        <div class="modality-title">Network Metadata</div>
-        <div class="modality-desc">IP origin pattern analysis, latency spike signatures consistent with synthetic media streaming, compression artifact profiles, and abnormal packet structures. Benchmarked against known deepfake delivery infrastructure signatures.</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- GOVERNANCE -->
-  <section id="governance">
-    <div class="section-tag">// Section 04</div>
-    <h2 class="section-title reveal">Governance Framework Alignment</h2>
-    <p class="section-desc reveal">
-      Every KPI in this methodology maps directly to the Measure and Manage functions of the NIST AI RMF 1.0 
-      and the audit requirements of ISO/IEC 42001:2023.
-    </p>
-
-    <table class="gov-table reveal">
-      <thead>
-        <tr>
-          <th>Requirement</th>
-          <th>Framework</th>
-          <th>ZYFER KPI Mapping</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Quantitative AI system risk measurement</td>
-          <td><span class="badge badge-nist">NIST AI RMF – Measure</span></td>
-          <td>All 15 KPIs with defined thresholds</td>
-        </tr>
-        <tr>
-          <td>Risk treatment and model improvement triggers</td>
-          <td><span class="badge badge-nist">NIST AI RMF – Manage</span></td>
-          <td>5-tier scoring rubric and alert protocols</td>
-        </tr>
-        <tr>
-          <td>Documented AI policy objectives and audit trails</td>
-          <td><span class="badge badge-iso">ISO/IEC 42001</span></td>
-          <td>SHAP Coverage KPI; HITL Escalation Accuracy</td>
-        </tr>
-        <tr>
-          <td>Demographic fairness and equitable performance</td>
-          <td><span class="badge badge-nist">NIST AI RMF</span> <span class="badge badge-iso">ISO/IEC 42001</span></td>
-          <td>Demographic Bias Delta KPIs (FPR &amp; FNR)</td>
-        </tr>
-        <tr>
-          <td>Human oversight for high-stakes automated decisions</td>
-          <td><span class="badge badge-hitl">HITL Policy</span> <span class="badge badge-nist">NIST Govern</span></td>
-          <td>HITL Escalation Accuracy; Critical Fail protocol</td>
-        </tr>
-        <tr>
-          <td>SOC 2 Type II operational controls evidence</td>
-          <td><span class="badge badge-soc">SOC 2 Type II</span></td>
-          <td>Audit log completeness; SHAP Coverage KPI</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- DOCUMENT VIEWER -->
-  <section id="viewer" style="padding-top: 5rem; padding-bottom: 5rem;">
-    <div class="section-tag">// Full Document</div>
-    <h2 class="section-title reveal">Read the Full Methodology</h2>
-    <p class="section-desc reveal">
-      The complete benchmarking methodology document is available below
+</body>
+</html>
