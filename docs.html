@@ -1,499 +1,1453 @@
+Docs · HTML
+Copy
+
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZYFER Documentation - Zero-Trust Synthetic Forensics Engine</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        cyber: {
-                            dark: '#0a0f1c',
-                            darker: '#050811',
-                            cyan: '#00f0ff',
-                            blue: '#0066ff',
-                            purple: '#7000ff',
-                            accent: '#00d4ff',
-                        }
-                    },
-                    animation: {
-                        'gradient': 'gradient 8s linear infinite',
-                        'pulse-glow': 'pulse-glow 4s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        gradient: {
-                            '0%, 100%': { backgroundPosition: '0% 50%' },
-                            '50%': { backgroundPosition: '100% 50%' },
-                        },
-                        'pulse-glow': {
-                            '0%, 100%': { opacity: 0.4, transform: 'scale(1)' },
-                            '50%': { opacity: 0.8, transform: 'scale(1.05)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        body {
-            background-color: #0a0f1c;
-            color: #e2e8f0;
-            overflow-x: hidden;
-        }
-        
-        .glass {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .glass-strong {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(0, 240, 255, 0.2);
-        }
-        
-        .gradient-text {
-            background: linear-gradient(135deg, #00f0ff 0%, #7000ff 50%, #0066ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            background-size: 200% 200%;
-            animation: gradient 4s ease infinite;
-        }
-        
-        .cyber-grid {
-            background-image: 
-                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-        }
-        
-        .doc-card {
-            transition: all 0.3s ease;
-        }
-        
-        .doc-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(0, 240, 255, 0.4);
-            box-shadow: 0 10px 30px -10px rgba(0, 240, 255, 0.2);
-        }
-        
-        .prose-cyber h2 {
-            color: white;
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin-top: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .prose-cyber h3 {
-            color: #e2e8f0;
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 0.75rem;
-        }
-        
-        .prose-cyber p {
-            color: #94a3b8;
-            margin-bottom: 1rem;
-            line-height: 1.75;
-        }
-        
-        .prose-cyber ul {
-            list-style-type: disc;
-            padding-left: 1.5rem;
-            color: #94a3b8;
-            margin-bottom: 1rem;
-        }
-        
-        .prose-cyber li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .prose-cyber strong {
-            color: white;
-            font-weight: 600;
-        }
-        
-        .prose-cyber a {
-            color: #00f0ff;
-            text-decoration: none;
-            transition: opacity 0.2s;
-        }
-        
-        .prose-cyber a:hover {
-            opacity: 0.8;
-            text-decoration: underline;
-        }
-        
-        .sidebar-link {
-            transition: all 0.2s;
-        }
-        
-        .sidebar-link:hover {
-            color: #00f0ff;
-            padding-left: 0.5rem;
-        }
-        
-        .sidebar-link.active {
-            color: #00f0ff;
-            border-left: 2px solid #00f0ff;
-            padding-left: 0.75rem;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZYFER Documentation - Zero-Trust Synthetic Forensics Engine</title>
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    :root {
+      --bg:        #0a0e1a;
+      --bg2:       #0d1220;
+      --surface:   #111827;
+      --surface2:  #161d2e;
+      --border:    #1e2a3a;
+      --border2:   #243044;
+      --accent:    #00d4ff;
+      --accent2:   #0099cc;
+      --accent3:   #00ff87;
+      --text:      #e2e8f0;
+      --text-muted:#7a8fa6;
+      --text-dim:  #4a5f75;
+      --navy:      #0d1b2a;
+      --teal:      #0f4c75;
+      --danger:    #ff4d6d;
+      --warn:      #ffd166;
+    }
+ 
+    html { scroll-behavior: smooth; }
+ 
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+ 
+    /* ── Grid texture ─────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+      z-index: 0;
+    }
+ 
+    /* ── NAV ──────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,14,26,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+ 
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+ 
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+ 
+    .nav-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+      font-weight: 400;
+      padding-left: 10px;
+      border-left: 1px solid var(--border2);
+    }
+ 
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+ 
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      transition: color .2s;
+    }
+ 
+    .nav-links a:hover { color: var(--accent); }
+ 
+    .nav-btn {
+      background: var(--accent);
+      color: var(--bg) !important;
+      padding: 7px 18px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 12px !important;
+      letter-spacing: 0.08em !important;
+      transition: opacity .2s !important;
+    }
+ 
+    .nav-btn:hover { opacity: .85; color: var(--bg) !important; }
+ 
+    /* mobile nav toggle */
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; }
+    .nav-toggle span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text); margin: 5px 0; transition: .3s;
+    }
+ 
+    /* ── LAYOUT ───────────────────────────────────────────── */
+    .page-wrap {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+ 
+    /* ── SIDEBAR ──────────────────────────────────────────── */
+    .sidebar {
+      position: sticky;
+      top: 60px;
+      height: calc(100vh - 60px);
+      overflow-y: auto;
+      padding: 32px 20px 32px 24px;
+      border-right: 1px solid var(--border);
+      background: var(--bg2);
+    }
+ 
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+ 
+    .sidebar-section {
+      margin-bottom: 28px;
+    }
+ 
+    .sidebar-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      font-weight: 600;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+ 
+    .sidebar-links { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+ 
+    .sidebar-links a {
+      display: block;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: background .15s, color .15s;
+      border-left: 2px solid transparent;
+    }
+ 
+    .sidebar-links a:hover {
+      background: var(--surface);
+      color: var(--text);
+      border-left-color: var(--border2);
+    }
+ 
+    .sidebar-links a.active {
+      background: rgba(0,212,255,.08);
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+ 
+    /* ── MAIN CONTENT ─────────────────────────────────────── */
+    main {
+      padding: 48px 56px 80px;
+      max-width: 860px;
+    }
+ 
+    /* ── SECTION SHARED ───────────────────────────────────── */
+    .doc-section { margin-bottom: 72px; }
+ 
+    .section-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+ 
+    .section-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 20px; height: 1px;
+      background: var(--accent);
+    }
+ 
+    h1 {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.15;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+ 
+    h1 span { color: var(--accent); }
+ 
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      margin-top: 36px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+ 
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 10px;
+      margin-top: 24px;
+      letter-spacing: 0.03em;
+    }
+ 
+    h4 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+ 
+    p { color: var(--text-muted); margin-bottom: 14px; line-height: 1.75; }
+ 
+    strong { color: var(--text); font-weight: 600; }
+ 
+    ul, ol { padding-left: 20px; margin-bottom: 14px; }
+    li { color: var(--text-muted); margin-bottom: 6px; line-height: 1.7; }
+ 
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+ 
+    /* ── LEAD TEXT ────────────────────────────────────────── */
+    .lead {
+      font-size: 16px;
+      color: var(--text);
+      line-height: 1.8;
+      margin-bottom: 32px;
+      padding-left: 16px;
+      border-left: 3px solid var(--accent);
+    }
+ 
+    /* ── DIVIDER ──────────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+ 
+    /* ── CARDS ────────────────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2px;
+      margin: 24px 0;
+    }
+ 
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+      border-radius: 2px;
+      transition: border-color .2s;
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity .2s;
+    }
+ 
+    .card:hover { border-color: var(--border2); }
+    .card:hover::before { opacity: 1; }
+ 
+    .card-icon {
+      font-size: 22px;
+      margin-bottom: 10px;
+      display: block;
+    }
+ 
+    .card h3 { margin-top: 0; font-size: 14px; }
+    .card p { font-size: 13px; margin-bottom: 0; }
+ 
+    /* ── USER TYPE CARDS ──────────────────────────────────── */
+    .user-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2px;
+      margin: 20px 0;
+    }
+ 
+    .user-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+    }
+ 
+    .user-card h3 { font-size: 13px; margin-top: 0; margin-bottom: 10px; }
+    .user-card ul { margin: 0; padding-left: 16px; }
+    .user-card li { font-size: 13px; margin-bottom: 4px; }
+ 
+    /* ── WORKFLOW STEPS ───────────────────────────────────── */
+    .workflow { display: flex; flex-direction: column; gap: 0; margin: 24px 0; }
+ 
+    .workflow-step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 0 20px;
+      position: relative;
+      padding-bottom: 28px;
+    }
+ 
+    .workflow-step:last-child { padding-bottom: 0; }
+ 
+    .step-num {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+ 
+    .workflow-step::before {
+      content: '';
+      position: absolute;
+      top: 36px;
+      left: 17px;
+      width: 2px;
+      height: calc(100% - 10px);
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+ 
+    .workflow-step:last-child::before { display: none; }
+ 
+    .step-content { padding-top: 6px; }
+    .step-content h3 { margin-top: 0; font-size: 14px; }
+    .step-content p { font-size: 13px; margin-bottom: 0; }
+ 
+    /* ── INLINE CODE ──────────────────────────────────────── */
+    code {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      color: var(--accent3);
+    }
+ 
+    /* ── BADGE ────────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      background: rgba(0,212,255,.1);
+      border: 1px solid rgba(0,212,255,.25);
+      border-radius: 3px;
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+ 
+    .badge.green {
+      background: rgba(0,255,135,.08);
+      border-color: rgba(0,255,135,.25);
+      color: var(--accent3);
+    }
+ 
+    .badge.orange {
+      background: rgba(255,209,102,.08);
+      border-color: rgba(255,209,102,.25);
+      color: var(--warn);
+    }
+ 
+    /* ══════════════════════════════════════════════════════
+       CASE STUDY SECTION — unique styles
+    ══════════════════════════════════════════════════════ */
+ 
+    .cs-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #0a1929 60%, #061020 100%);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 40px 44px;
+      margin: 28px 0 32px;
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    .cs-hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, rgba(0,212,255,.12), transparent 70%);
+      pointer-events: none;
+    }
+ 
+    .cs-hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent3), transparent);
+    }
+ 
+    .cs-tag {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+ 
+    .cs-tag::before {
+      content: '';
+      width: 16px; height: 1px;
+      background: var(--accent);
+    }
+ 
+    .cs-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+ 
+    .cs-title span { color: var(--accent); }
+ 
+    .cs-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+ 
+    .cs-stats {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+ 
+    .cs-stat { display: flex; flex-direction: column; gap: 3px; }
+ 
+    .cs-stat-num {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+ 
+    .cs-stat-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+ 
+    /* Stat pill row */
+    .cs-pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 20px 0 28px;
+    }
+ 
+    .cs-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      flex: 1;
+      min-width: 120px;
+    }
+ 
+    .cs-pill-dot {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+      flex-shrink: 0;
+    }
+ 
+    .cs-pill-dot.green { background: var(--accent3); box-shadow: 0 0 8px var(--accent3); }
+ 
+    .cs-pill-text { font-size: 12px; color: var(--text-muted); }
+    .cs-pill-val  { font-size: 14px; font-weight: 700; color: var(--text); margin-left: auto; }
+ 
+    /* Framework table */
+    .fw-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 28px;
+      font-size: 13px;
+    }
+ 
+    .fw-table th {
+      background: var(--teal);
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      border: 1px solid #0f4c75;
+    }
+ 
+    .fw-table td {
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.55;
+    }
+ 
+    .fw-table tr:nth-child(odd) td { background: var(--surface2); }
+    .fw-table tr:nth-child(even) td { background: var(--surface); }
+    .fw-table tr:hover td { background: rgba(0,212,255,.04); }
+ 
+    .fw-table td:first-child {
+      font-weight: 600;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+ 
+    /* Architecture layers */
+    .arch-layers { display: flex; flex-direction: column; gap: 2px; margin: 16px 0 28px; }
+ 
+    .arch-layer {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 0;
+      align-items: stretch;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+ 
+    .arch-layer:hover { border-color: var(--accent); }
+ 
+    .arch-num {
+      background: var(--teal);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+ 
+    .arch-body {
+      background: var(--surface);
+      padding: 16px 20px;
+    }
+ 
+    .arch-body strong {
+      display: block;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+ 
+    .arch-body p {
+      font-size: 12px;
+      margin: 0;
+      line-height: 1.55;
+    }
+ 
+    .arch-tech {
+      background: var(--surface2);
+      padding: 16px 16px;
+      font-size: 11px;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      min-width: 140px;
+      font-style: italic;
+      border-left: 1px solid var(--border);
+    }
+ 
+    /* Before / After comparison */
+    .cs-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin: 16px 0 28px;
+    }
+ 
+    .cs-compare-col { border: 1px solid var(--border); overflow: hidden; }
+ 
+    .cs-compare-head {
+      padding: 10px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+ 
+    .cs-compare-head.before { background: rgba(255,77,109,.15); color: var(--danger); }
+    .cs-compare-head.after  { background: rgba(0,255,135,.1);  color: var(--accent3); }
+ 
+    .cs-compare-body { padding: 16px 18px; background: var(--surface); }
+ 
+    .cs-compare-body ul { margin: 0; padding-left: 18px; }
+    .cs-compare-body li { font-size: 13px; margin-bottom: 8px; color: var(--text-muted); }
+ 
+    /* Download CTA */
+    .cs-cta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 24px 28px;
+      background: linear-gradient(90deg, rgba(0,212,255,.06), rgba(0,255,135,.04));
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+ 
+    .cs-cta-text { flex: 1; min-width: 200px; }
+    .cs-cta-text strong { display: block; font-size: 15px; color: var(--text); margin-bottom: 4px; }
+    .cs-cta-text span { font-size: 13px; color: var(--text-muted); }
+ 
+    .cs-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      transition: opacity .2s, transform .15s;
+      white-space: nowrap;
+    }
+ 
+    .cs-btn:hover { opacity: .88; transform: translateY(-1px); text-decoration: none; }
+ 
+    .cs-btn-outline {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+ 
+    .cs-btn-outline:hover { background: rgba(0,212,255,.08); }
+ 
+    /* Profile card */
+    .profile-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin: 20px 0 28px;
+    }
+ 
+    .profile-col {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 22px 24px;
+    }
+ 
+    .profile-col h4 { margin-top: 0; }
+ 
+    .cert-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+ 
+    .cert-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+ 
+    .cert-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+ 
+    /* ── FOOTER ───────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+ 
+    footer p { font-size: 12px; color: var(--text-dim); margin: 0; }
+    footer span { color: var(--accent); }
+ 
+    /* ── RESPONSIVE ───────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      main { padding: 32px 24px 60px; }
+    }
+ 
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; }
+      .nav-links { display: none; }
+      .nav-toggle { display: block; }
+      .cs-compare { grid-template-columns: 1fr; }
+      .profile-card { grid-template-columns: 1fr; }
+      .cs-stats { gap: 20px; }
+      .arch-layer { grid-template-columns: 48px 1fr; }
+      .arch-tech { display: none; }
+    }
+ 
+    /* ── SCROLL ANIMATIONS ────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: none; }
+  </style>
 </head>
-<body class="font-sans antialiased selection:bg-cyber-cyan selection:text-cyber-darker cyber-grid">
-
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 glass border-b border-white/10" id="navbar">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <a href="index.html" class="flex items-center space-x-3 group cursor-pointer">
-                    <div class="relative w-10 h-10 flex items-center justify-center">
-                        <div class="absolute inset-0 bg-cyber-cyan rounded-lg opacity-20 group-hover:opacity-40 transition-opacity animate-pulse"></div>
-                        <i data-lucide="shield-check" class="w-6 h-6 text-cyber-cyan relative z-10"></i>
-                    </div>
-                    <span class="text-2xl font-bold tracking-tight text-white">
-                        ZY<span class="text-cyber-cyan">FER</span>
-                        <span class="text-sm font-normal text-slate-400 ml-2 hidden sm:inline">Docs</span>
-                    </span>
-                </a>
-                
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html" class="text-sm font-medium text-slate-300 hover:text-cyber-cyan transition-colors">Home</a>
-                    <a href="#welcome" class="text-sm font-medium text-slate-300 hover:text-cyber-cyan transition-colors">Welcome</a>
-                    <a href="#features" class="text-sm font-medium text-slate-300 hover:text-cyber-cyan transition-colors">Features</a>
-                    <a href="#security" class="text-sm font-medium text-slate-300 hover:text-cyber-cyan transition-colors">Security</a>
-                    <button class="px-6 py-2.5 bg-cyber-cyan text-cyber-darker font-semibold rounded-lg hover:shadow-lg hover:shadow-cyber-cyan/30 transition-all text-sm">
-                        Get Started
-                    </button>
-                </div>
-                
-                <button class="md:hidden p-2 text-white" onclick="toggleMobileMenu()">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden glass-strong border-t border-white/10">
-            <div class="px-4 pt-2 pb-6 space-y-2">
-                <a href="index.html" class="block px-3 py-2 text-slate-300 hover:text-cyber-cyan">Home</a>
-                <a href="#welcome" class="block px-3 py-2 text-slate-300 hover:text-cyber-cyan">Welcome</a>
-                <a href="#features" class="block px-3 py-2 text-slate-300 hover:text-cyber-cyan">Features</a>
-                <a href="#security" class="block px-3 py-2 text-slate-300 hover:text-cyber-cyan">Security</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="flex pt-20">
-        <!-- Sidebar Navigation -->
-        <aside class="hidden lg:block w-72 fixed h-full overflow-y-auto border-r border-white/10 bg-cyber-darker/50 backdrop-blur-sm">
-            <div class="p-6">
-                <div class="mb-8">
-                    <h3 class="text-xs font-mono text-cyber-cyan uppercase tracking-wider mb-4">Documentation Index</h3>
-                    <div class="glass rounded-lg p-4 border border-cyber-cyan/20">
-                        <p class="text-xs text-slate-400 mb-2">Fetch the complete documentation index at:</p>
-                        <a href="https://docs.zyfer.dev/llms.txt" class="text-xs font-mono text-cyber-cyan break-all hover:underline">
-                            https://docs.zyfer.dev/llms.txt
-                        </a>
-                        <p class="text-xs text-slate-500 mt-2">Use this file to discover all available pages before exploring further.</p>
-                    </div>
-                </div>
-
-                <nav class="space-y-1">
-                    <a href="#welcome" class="sidebar-link block py-2 text-sm text-slate-300 border-l-2 border-transparent">Welcome to ZYFER</a>
-                    <a href="#why-zyfer" class="sidebar-link block py-2 text-sm text-slate-300 border-l-2 border-transparent pl-4">Why use ZYFER</a>
-                    <a href="#who-for" class="sidebar-link block py-2 text-sm text-slate-300 border-l-2 border-transparent pl-4">Who ZYFER is for</a>
-                    <a href="#capabilities" class="sidebar-link block py-2 text-sm text-slate-300 border-l-2 border-transparent pl-4">Detection Capabilities</a>
-                    <a href="#security" class="sidebar-link block py-2 text-sm text-slate-300 border-l-2 border-transparent">Security & Compliance</a>
-                    <a href="#workflow" class="sidebar-link block py-2 text-sm text-slate-300 border-l-2 border-transparent">Integration Workflow</a>
-                    <a href="#resources" class="sidebar-link block py-2 text-sm text-slate-300 border-l-2 border-transparent">Resources</a>
-                </nav>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 lg:ml-72 max-w-5xl mx-auto px-4 sm:px-6 lg:px-12 py-12 prose-cyber">
-            
-            <!-- Welcome Section -->
-            <section id="welcome" class="mb-16">
-                <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">Welcome to ZYFER</h1>
-                
-                <div class="glass rounded-2xl p-6 mb-8 border border-cyber-cyan/20">
-                    <div class="aspect-video rounded-xl overflow-hidden bg-cyber-darker relative">
-                       <iframe width="412" height="732" src="https://www.youtube.com/embed/GQt_V9O1s0Q" title="Zyfer commercial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <p class="text-lg text-slate-300 leading-relaxed mb-6">
-                    ZYFER is a full-stack cybersecurity platform for detecting, analyzing, and mitigating AI-generated impersonation attacks using synthetic forensics, with real-time processing, zero-trust architecture, and enterprise governance.
-                </p>
-                
-                <p>
-                    ZYFER lets security teams and enterprises protect their communications infrastructure from deepfake voice, video, and behavioral manipulation attacks using advanced multimodal AI. You describe your security requirements, and ZYFER deploys a protective layer that includes real-time detection, automated response, forensic logging, and integration capabilities, all backed by explainable AI and editable configurations.
-                </p>
-                
-                <p>
-                    ZYFER supports the full lifecycle of modern cybersecurity operations, from initial threat assessment and pilot deployment to enterprise-wide rollout and ongoing threat intelligence updates. Applications are protected through shared security workspaces, where teams collaborate across one or more detection instances. Each deployment represents a single protective layer and produces forensic logs that can be synced to SIEM platforms and integrated into existing security workflows. The platform is built to help security teams move faster while maintaining situational awareness, operational control, and digital trust.
-                </p>
-            </section>
-
-            <!-- Why ZYFER -->
-            <section id="why-zyfer" class="mb-16">
-                <h2>Why use ZYFER</h2>
-                <p>ZYFER makes it easier to go from threat awareness to protected communications.</p>
-                
-                <p><strong>Faster threat response</strong><br>
-                Move from detection to mitigation in milliseconds through automated synthetic forensics instead of manual review of suspicious media.</p>
-                
-                <p><strong>Collaboration when you need it</strong><br>
-                Work solo or with a security team. ZYFER supports shared workspaces so analysts across roles can contribute to threat analysis in one place when collaboration matters.</p>
-                
-                <p><strong>Forensic ownership and flexibility</strong><br>
-                Keep full ownership of your detection logs and integrate ZYFER into existing SIEM workflows.</p>
-                
-                <p><strong>Built with enterprise needs in mind</strong><br>
-                <a href="#security">Security, privacy, and governance capabilities</a> are built into the platform from the start.</p>
-            </section>
-
-            <!-- Who ZYFER is for -->
-            <section id="who-for" class="mb-16">
-                <h2>Who ZYFER is for</h2>
-                <p>ZYFER is used by security professionals protecting communications on their own, with teams, and across organizations of different sizes.</p>
-                
-                <h3>Individual security practitioners</h3>
-                <ul>
-                    <li>Security researchers analyzing synthetic media samples and testing detection algorithms</li>
-                    <li>Consultants performing security audits for client communications systems</li>
-                    <li>Independent analysts investigating specific deepfake incidents or threats</li>
-                </ul>
-                
-                <h3>Security operations and incident response teams</h3>
-                <ul>
-                    <li>SOC analysts monitoring real-time communications for synthetic impersonation attempts</li>
-                    <li>Incident responders investigating confirmed deepfake attacks and gathering forensics</li>
-                    <li>Threat hunters proactively searching for AI-generated manipulation in voice and video channels</li>
-                </ul>
-                
-                <h3>Technical teams and MSSPs</h3>
-                <ul>
-                    <li>Security engineers integrating ZYFER APIs into existing monitoring stacks</li>
-                    <li>DevSecOps teams reviewing detection configurations and maintaining deployment pipelines</li>
-                    <li>Managed security service providers delivering client protection where forensic ownership and auditability matter</li>
-                </ul>
-                
-                <h3>Enterprises</h3>
-                <ul>
-                    <li>Teams protecting executive communications or high-stakes video conferencing across the organization</li>
-                    <li>Organizations operating with <a href="#security">security, compliance, and governance</a> requirements including financial services, healthcare, and government</li>
-                    <li>Companies integrating AI-assisted threat detection into established security workflows and existing zero-trust architectures</li>
-                </ul>
-            </section>
-
-            <!-- Detection Capabilities -->
-            <section id="capabilities" class="mb-16">
-                <h2>What you can detect with ZYFER</h2>
-                <p>ZYFER supports a broad range of synthetic threats, from common deepfakes to advanced behavioral manipulation.</p>
-                
-                <p><strong>Voice synthesis and audio deepfakes</strong><br>
-                Real-time cloning detection, text-to-speech artifacts, and voice conversion attacks in VoIP and conferencing platforms</p>
-                
-                <p><strong>Video and facial manipulation</strong><br>
-                Face-swap detection, lip-sync inconsistency analysis, and generative video artifacts in recorded and live streams</p>
-                
-                <p><strong>Behavioral biometrics and synthetic interactions</strong><br>
-                Keystroke injection detection, unnatural mouse movement patterns, and automated agent detection in collaboration tools</p>
-                
-                <p><strong>Cross-modal inconsistency detection</strong><br>
-                Voice-to-video synchronization analysis, temporal consistency verification, and multi-factor anomaly correlation</p>
-                
-                <p><strong>Real-time communication protection</strong><br>
-                Live streaming analysis, webinar protection, and meeting platform integration for immediate threat blocking</p>
-                
-                <p><strong>Forensic analysis and evidence preservation</strong><br>
-                Deepfake sample archiving, chain-of-custody logging, and court-admissible forensic reporting for legal proceedings</p>
-            </section>
-
-            <!-- Security Section -->
-            <section id="security" class="mb-16">
-                <h2>Security, privacy, and compliance</h2>
-                <p>ZYFER is built to meet enterprise security and compliance requirements for sensitive communications protection.</p>
-                
-                <h3>Certifications and standards</h3>
-                <ul>
-                    <li>SOC 2 Type II</li>
-                    <li>ISO 27001:2022</li>
-                    <li>GDPR compliance</li>
-                    <li>FIPS 140-2 Level 3 (HSM-backed key storage)</li>
-                </ul>
-                <p><a href="research.html">View compliance reports and security attestations</a></p>
-                
-                <h3>Access and identity</h3>
-                <ul>
-                    <li>Workspace-level roles and permissions (Analyst, Investigator, Admin)</li>
-                    <li>Secure authentication with two-factor authentication (2FA) and hardware key support</li>
-                    <li>Single sign-on (SSO) with SAML 2.0 and OIDC</li>
-                    <li>SCIM user provisioning for automated team management</li>
-                </ul>
-                
-                <h3>Platform security and governance</h3>
-                <ul>
-                    <li>Workspace-level administration and audit controls</li>
-                    <li>Built-in security checks and detection guidance</li>
-                    <li>Data processing controls and forensic data retention policies</li>
-                    <li>End-to-end encryption for all analyzed media with customer-managed keys (CMK)</li>
-                </ul>
-                <p><a href="https://zyfer.dev/security">Learn more about ZYFER's approach to security</a></p>
-                
-                <h3>Legal and data protection</h3>
-                <ul>
-                    <li><a href="https://zyfer.dev/privacy">Privacy Policy</a></li>
-                    <li><a href="https://zyfer.dev/terms">Terms of Service</a></li>
-                    <li><a href="https://zyfer.dev/dpa">Data Processing Agreement (DPA)</a></li>
-                    <li><a href="https://zyfer.dev/platform-rules">Platform Rules</a> and <a href="https://zyfer.dev/abuse">Abuse Policies</a></li>
-                </ul>
-            </section>
-
-            <!-- Workflow Section -->
-            <section id="workflow" class="mb-16">
-                <h2>How ZYFER fits into your workflow</h2>
-                <p>ZYFER is designed to complement existing security tools and processes:</p>
-                
-                <ol class="list-decimal pl-6 space-y-2 text-slate-400 mb-6">
-                    <li>Deploy ZYFER protective layer to your communications infrastructure</li>
-                    <li>Monitor and review detection results in real-time dashboard</li>
-                    <li>Sync forensic logs to your SIEM (Splunk, Sentinel, QRadar)</li>
-                    <li>Respond, investigate, and maintain audit trails according to your standards</li>
-                </ol>
-                
-                <p>ZYFER adapts to how your security team works, rather than forcing changes to your SOC workflow.</p>
-            </section>
-
-            <!-- Resources Grid -->
-            <section id="resources" class="mb-16">
-                <h2>Documentation Resources</h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6 not-prose">
-                    
-                    <a href="#" class="doc-card glass rounded-xl p-6 border border-white/10 block">
-                        <div class="w-10 h-10 rounded-lg bg-cyber-cyan/10 flex items-center justify-center mb-4">
-                            <i data-lucide="stairs" class="w-5 h-5 text-cyber-cyan"></i>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">Getting Started</h3>
-                        <p class="text-sm text-slate-400">Step-by-step tutorial to deploy your first ZYFER protection instance.</p>
-                    </a>
-                    
-                    <a href="#" class="doc-card glass rounded-xl p-6 border border-white/10 block">
-                        <div class="w-10 h-10 rounded-lg bg-cyber-blue/10 flex items-center justify-center mb-4">
-                            <i data-lucide="toolbox" class="w-5 h-5 text-cyber-blue"></i>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">Features</h3>
-                        <p class="text-sm text-slate-400">ZYFER's core detection and forensics features.</p>
-                    </a>
-                    
-                    <a href="#" class="doc-card glass rounded-xl p-6 border border-white/10 block">
-                        <div class="w-10 h-10 rounded-lg bg-cyber-purple/10 flex items-center justify-center mb-4">
-                            <i data-lucide="link" class="w-5 h-5 text-cyber-purple"></i>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">Integrations</h3>
-                        <p class="text-sm text-slate-400">Connect ZYFER to your existing security stack.</p>
-                    </a>
-                    
-                    <a href="#" class="doc-card glass rounded-xl p-6 border border-white/10 block">
-                        <div class="w-10 h-10 rounded-lg bg-pink-500/10 flex items-center justify-center mb-4">
-                            <i data-lucide="lightbulb" class="w-5 h-5 text-pink-500"></i>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">Tips & Tricks</h3>
-                        <p class="text-sm text-slate-400">Get the most out of ZYFER detection capabilities.</p>
-                    </a>
-                    
-                    <a href="#" class="doc-card glass rounded-xl p-6 border border-white/10 block">
-                        <div class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center mb-4">
-                            <i data-lucide="robot" class="w-5 h-5 text-green-500"></i>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">API Reference</h3>
-                        <p class="text-sm text-slate-400">Complete REST API and webhook documentation.</p>
-                    </a>
-                    
-                    <a href="#" class="doc-card glass rounded-xl p-6 border border-white/10 block">
-                        <div class="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center mb-4">
-                            <i data-lucide="bookmark" class="w-5 h-5 text-yellow-500"></i>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">Glossary</h3>
-                        <p class="text-sm text-slate-400">Learn the key terms in synthetic forensics.</p>
-                    </a>
-                </div>
-            </section>
-
-            <footer class="border-t border-white/10 pt-8 mt-16">
-                <p class="text-slate-500 text-sm">
-                    Built with <a href="https://zyfer.dev" class="text-cyber-cyan">ZYFER Security</a>. 
-                    &copy; 2024 ZYFER Security Solutions. All rights reserved.
-                </p>
-            </footer>
-        </main>
+<body>
+ 
+<!-- ── NAV ────────────────────────────────────────────────── -->
+<nav>
+  <a class="nav-brand" href="https://jmckenney3563.github.io/ZYFER_WEBSITE/index.html">
+    <span class="nav-logo">ZYFER</span>
+    <span class="nav-sub">Docs</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="https://jmckenney3563.github.io/ZYFER_WEBSITE/index.html">Home</a></li>
+    <li><a href="#welcome">Welcome</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#case-study">Case Study</a></li>
+    <li><a href="#security">Security</a></li>
+    <li><a href="https://jmckenney3563.github.io/ZYFER_WEBSITE/index.html" class="nav-btn">Get Started</a></li>
+  </ul>
+  <button class="nav-toggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+ 
+<!-- ── PAGE WRAP ──────────────────────────────────────────── -->
+<div class="page-wrap">
+ 
+  <!-- ── SIDEBAR ──────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Overview</div>
+      <ul class="sidebar-links">
+        <li><a href="#welcome" class="active">Welcome to ZYFER</a></li>
+        <li><a href="#why-zyfer">Why use ZYFER</a></li>
+        <li><a href="#who-for">Who ZYFER is for</a></li>
+      </ul>
     </div>
-
-    <script>
-        // Initialize Lucide Icons
-        lucide.createIcons();
-        
-        // Mobile Menu Toggle
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
-        
-        // Active Section Highlighting
-        function updateActiveSection() {
-            const sections = document.querySelectorAll('section[id]');
-            const sidebarLinks = document.querySelectorAll('.sidebar-link');
-            
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (window.scrollY >= (sectionTop - 200)) {
-                    current = section.getAttribute('id');
-                }
-            });
-            
-            sidebarLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
-                }
-            });
-        }
-        
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-        
-        window.addEventListener('scroll', updateActiveSection);
-        window.addEventListener('load', updateActiveSection);
-    </script>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Platform</div>
+      <ul class="sidebar-links">
+        <li><a href="#capabilities">Detection Capabilities</a></li>
+        <li><a href="#security">Security &amp; Compliance</a></li>
+        <li><a href="#workflow">Integration Workflow</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Case Study</div>
+      <ul class="sidebar-links">
+        <li><a href="#case-study">📄 ZYFER Technical Case Study</a></li>
+        <li><a href="#cs-problem">Problem Statement</a></li>
+        <li><a href="#cs-architecture">Architecture</a></li>
+        <li><a href="#cs-frameworks">Framework Alignment</a></li>
+        <li><a href="#cs-impact">Business Impact</a></li>
+        <li><a href="#cs-download">Download</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Resources</div>
+      <ul class="sidebar-links">
+        <li><a href="#resources">Documentation Hub</a></li>
+      </ul>
+    </div>
+  </aside>
+ 
+  <!-- ── MAIN ─────────────────────────────────────────────── -->
+  <main>
+ 
+    <!-- WELCOME ──────────────────────────────────────────── -->
+    <section class="doc-section" id="welcome">
+      <p class="section-eyebrow">Documentation</p>
+      <h1>Welcome to <span>ZYFER</span></h1>
+      <p class="lead">
+        ZYFER is a full-stack cybersecurity platform for detecting, analyzing, and mitigating
+        AI-generated impersonation attacks using synthetic forensics — with real-time processing,
+        zero-trust architecture, and enterprise governance.
+      </p>
+      <p>
+        ZYFER lets security teams protect communications infrastructure from deepfake voice, video,
+        and behavioral manipulation attacks using advanced multimodal AI. Describe your security
+        requirements and ZYFER deploys a protective layer that includes real-time detection,
+        automated response, forensic logging, and integration capabilities — all backed by
+        explainable AI and editable configurations.
+      </p>
+      <p>
+        ZYFER supports the full lifecycle of modern cybersecurity operations, from initial threat
+        assessment and pilot deployment to enterprise-wide rollout and ongoing threat intelligence
+        updates. Applications are protected through shared security workspaces, where teams
+        collaborate across one or more detection instances.
+      </p>
+    </section>
+ 
+    <hr class="divider" />
+ 
+    <!-- WHY ZYFER ────────────────────────────────────────── -->
+    <section class="doc-section" id="why-zyfer">
+      <h2>Why use ZYFER</h2>
+      <p>ZYFER makes it easier to go from threat awareness to protected communications.</p>
+ 
+      <div class="card-grid">
+        <div class="card fade-up">
+          <span class="card-icon">⚡</span>
+          <h3>Faster Threat Response</h3>
+          <p>Move from detection to mitigation in milliseconds through automated synthetic forensics instead of manual review.</p>
+        </div>
+        <div class="card fade-up">
+          <span class="card-icon">🤝</span>
+          <h3>Collaboration-Ready</h3>
+          <p>Work solo or with a security team. Shared workspaces let analysts across roles contribute to threat analysis in one place.</p>
+        </div>
+        <div class="card fade-up">
+          <span class="card-icon">🔍</span>
+          <h3>Forensic Ownership</h3>
+          <p>Keep full ownership of your detection logs and integrate ZYFER into existing SIEM workflows seamlessly.</p>
+        </div>
+        <div class="card fade-up">
+          <span class="card-icon">🏢</span>
+          <h3>Enterprise-Native</h3>
+          <p>Security, privacy, and governance capabilities are built into the platform from the start — not bolted on.</p>
+        </div>
+      </div>
+    </section>
+ 
+    <hr class="divider" />
+ 
+    <!-- WHO FOR ──────────────────────────────────────────── -->
+    <section class="doc-section" id="who-for">
+      <h2>Who ZYFER is for</h2>
+      <p>Used by security professionals protecting communications on their own, with teams, and across organizations of all sizes.</p>
+ 
+      <div class="user-grid">
+        <div class="user-card fade-up">
+          <h3>Individual Practitioners</h3>
+          <ul>
+            <li>Security researchers analyzing synthetic media</li>
+            <li>Consultants auditing client communications</li>
+            <li>Independent analysts investigating deepfake incidents</li>
+          </ul>
+        </div>
+        <div class="user-card fade-up">
+          <h3>SOC &amp; Incident Response Teams</h3>
+          <ul>
+            <li>SOC analysts monitoring real-time communications</li>
+            <li>Incident responders investigating confirmed attacks</li>
+            <li>Threat hunters proactively searching for AI manipulation</li>
+          </ul>
+        </div>
+        <div class="user-card fade-up">
+          <h3>Technical Teams &amp; MSSPs</h3>
+          <ul>
+            <li>Security engineers integrating ZYFER APIs</li>
+            <li>DevSecOps teams reviewing detection configs</li>
+            <li>Managed security providers delivering client protection</li>
+          </ul>
+        </div>
+        <div class="user-card fade-up">
+          <h3>Enterprise Organizations</h3>
+          <ul>
+            <li>Teams protecting executive communications</li>
+            <li>FinServ, healthcare, and government compliance needs</li>
+            <li>AI-assisted threat detection in existing ZTA stacks</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+ 
+    <hr class="divider" />
+ 
+    <!-- CAPABILITIES ─────────────────────────────────────── -->
+    <section class="doc-section" id="capabilities">
+      <h2>Detection Capabilities</h2>
+      <p>ZYFER supports a broad range of synthetic threats, from common deepfakes to advanced behavioral manipulation.</p>
+ 
+      <h3>Voice Synthesis &amp; Audio Deepfakes</h3>
+      <p>Real-time cloning detection, text-to-speech artifact identification, and voice conversion attack analysis in VoIP and conferencing platforms.</p>
+ 
+      <h3>Video &amp; Facial Manipulation</h3>
+      <p>Face-swap detection, lip-sync inconsistency analysis, and generative video artifact identification in both recorded and live streams.</p>
+ 
+      <h3>Behavioral Biometrics</h3>
+      <p>Keystroke injection detection, unnatural interaction pattern analysis, and automated agent detection in collaboration tools.</p>
+ 
+      <h3>Cross-Modal Inconsistency Detection</h3>
+      <p>Voice-to-video synchronization analysis, temporal consistency verification, and multi-factor anomaly correlation for composite attack detection.</p>
+ 
+      <h3>Real-Time Communication Protection</h3>
+      <p>Live streaming analysis, webinar protection, and meeting platform integration for immediate threat blocking with sub-50ms latency.</p>
+ 
+      <h3>Forensic Analysis &amp; Evidence Preservation</h3>
+      <p>Deepfake sample archiving, chain-of-custody logging, and court-admissible forensic reporting for legal proceedings.</p>
+    </section>
+ 
+    <hr class="divider" />
+ 
+    <!-- ══════════════════════════════════════════════════════
+         CASE STUDY SECTION
+    ══════════════════════════════════════════════════════ -->
+    <section class="doc-section" id="case-study">
+ 
+      <!-- Hero banner -->
+      <p class="section-eyebrow">Technical Case Study</p>
+ 
+      <div class="cs-hero fade-up">
+        <p class="cs-tag">Live Deployment · 2024–2025</p>
+        <h2 class="cs-title" style="border:none;padding:0;margin-top:0;">
+          ZYFER — <span>Zero-Trust Synthetic</span><br>Forensics Engine
+        </h2>
+        <p class="cs-subtitle">
+          AI-native deepfake detection &amp; identity verification platform built by John McKenney,
+          GRC Analyst &amp; Cybersecurity Engineer. Framework-aligned from the ground up:
+          NIST AI RMF 1.0 · ISO/IEC 42001:2023 · NIST SP 800-207.
+        </p>
+        <div class="cs-stats">
+          <div class="cs-stat">
+            <span class="cs-stat-num">99.9%</span>
+            <span class="cs-stat-label">Detection Rate</span>
+          </div>
+          <div class="cs-stat">
+            <span class="cs-stat-num">&lt;50ms</span>
+            <span class="cs-stat-label">Response Latency</span>
+          </div>
+          <div class="cs-stat">
+            <span class="cs-stat-num">4</span>
+            <span class="cs-stat-label">Modalities</span>
+          </div>
+          <div class="cs-stat">
+            <span class="cs-stat-num">3</span>
+            <span class="cs-stat-label">Frameworks Mapped</span>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Quick badges -->
+      <div style="margin-bottom: 28px;">
+        <span class="badge">NIST AI RMF 1.0</span>
+        <span class="badge">ISO/IEC 42001:2023</span>
+        <span class="badge">NIST SP 800-207</span>
+        <span class="badge green">SOC 2 Type II</span>
+        <span class="badge green">ISO 27001:2022</span>
+        <span class="badge orange">LIME / SHAP XAI</span>
+      </div>
+ 
+      <!-- PROBLEM ─────────────────────────────────────────── -->
+      <div id="cs-problem">
+        <h2>Problem Statement</h2>
+        <p>
+          Synthetic media technology has advanced to the point where AI-generated voice, video, and
+          behavioral signals can convincingly impersonate executives, employees, and trusted third
+          parties. Traditional identity verification — relying on voice recognition, video
+          confirmation, and behavioral cues — is no longer a sufficient defense.
+        </p>
+        <p>
+          High-profile deepfake fraud incidents have resulted in catastrophic losses. A 2024
+          incident saw employees transfer <strong>$25 million</strong> after attending a video call
+          populated entirely by AI-generated executives. Global deepfake fraud losses exceeded
+          <strong>$40 billion</strong> in 2024. Existing security perimeters were simply not
+          designed for this threat vector.
+        </p>
+ 
+        <!-- Pill metrics -->
+        <div class="cs-pill-row">
+          <div class="cs-pill">
+            <span class="cs-pill-dot"></span>
+            <span class="cs-pill-text">Global Deepfake Fraud Loss (2024)</span>
+            <span class="cs-pill-val">$40B+</span>
+          </div>
+          <div class="cs-pill">
+            <span class="cs-pill-dot"></span>
+            <span class="cs-pill-text">Single Incident Record Loss</span>
+            <span class="cs-pill-val">$25M</span>
+          </div>
+          <div class="cs-pill">
+            <span class="cs-pill-dot green"></span>
+            <span class="cs-pill-text">ZYFER Detection Rate</span>
+            <span class="cs-pill-val">99.9%</span>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ARCHITECTURE ────────────────────────────────────── -->
+      <div id="cs-architecture">
+        <h2>System Architecture</h2>
+        <p>
+          ZYFER's modular three-layer defense matrix is designed for seamless enterprise
+          integration with no single point of failure. Each layer operates independently and
+          feeds enriched signals downstream.
+        </p>
+ 
+        <div class="arch-layers fade-up">
+          <div class="arch-layer">
+            <div class="arch-num">01</div>
+            <div class="arch-body">
+              <strong>Data Ingestion Layer</strong>
+              <p>Real-time encrypted stream ingestion from VoIP systems, video conferencing platforms, and enterprise collaboration tools. Protocol-agnostic with edge computing support.</p>
+            </div>
+            <div class="arch-tech">Kafka · WebRTC · gRPC · Edge Nodes</div>
+          </div>
+          <div class="arch-layer">
+            <div class="arch-num">02</div>
+            <div class="arch-body">
+              <strong>Multimodal Detection Engine</strong>
+              <p>Parallel neural network analysis across voice frequency patterns, facial micro-expressions, and behavioral biometrics. Sub-50ms inference with cross-modal anomaly scoring and LIME/SHAP explainability.</p>
+            </div>
+            <div class="arch-tech">Deep Neural Nets · ONNX · LIME · SHAP</div>
+          </div>
+          <div class="arch-layer">
+            <div class="arch-num">03</div>
+            <div class="arch-body">
+              <strong>Correlation &amp; Reinforcement</strong>
+              <p>Contextual identity correlation across sessions. Adaptive reinforcement learning from novel attack vectors. Threat intelligence enrichment and SIEM integration pipeline.</p>
+            </div>
+            <div class="arch-tech">RL · Behavioral Fingerprinting · SIEM</div>
+          </div>
+        </div>
+ 
+        <h3>Zero-Trust Implementation</h3>
+        <p>
+          ZYFER enforces <a href="https://csrc.nist.gov/publications/detail/sp/800-207/final" target="_blank">NIST SP 800-207</a> zero-trust principles at the communication layer —
+          a domain largely unaddressed by conventional ZTA implementations. Every session is
+          treated as untrusted by default, requiring continuous verification regardless of prior
+          authentication status, network location, or device posture.
+        </p>
+        <ul>
+          <li><strong>Per-session identity verification</strong> — no implicit trust from prior authentication</li>
+          <li><strong>Confidence score thresholds</strong> — allow / flag / block decisions with full audit trail</li>
+          <li><strong>Continuous authentication</strong> — throughout session duration, not only at initiation</li>
+          <li><strong>Cryptographic session binding</strong> — prevents replay and injection attacks</li>
+        </ul>
+      </div>
+ 
+      <!-- FRAMEWORK ALIGNMENT ─────────────────────────────── -->
+      <div id="cs-frameworks">
+        <h2>Compliance &amp; Framework Alignment</h2>
+        <p>ZYFER is mapped to three enterprise governance frameworks from the ground up — not retrofit after deployment.</p>
+ 
+        <table class="fw-table fade-up">
+          <thead>
+            <tr>
+              <th>Framework</th>
+              <th>Control / Requirement</th>
+              <th>ZYFER Capability</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>NIST AI RMF 1.0</td>
+              <td>GOVERN 1.1 — Roles &amp; Accountability</td>
+              <td>HITL oversight policy with defined escalation paths and confidence threshold governance</td>
+            </tr>
+            <tr>
+              <td>NIST AI RMF 1.0</td>
+              <td>MAP 2.1 — Context &amp; Risk Identification</td>
+              <td>Multimodal threat taxonomy mapped to enterprise communication risk surface</td>
+            </tr>
+            <tr>
+              <td>NIST AI RMF 1.0</td>
+              <td>MEASURE 2.5 — Explainability</td>
+              <td>LIME/SHAP integration provides per-decision feature attribution for all detections</td>
+            </tr>
+            <tr>
+              <td>NIST AI RMF 1.0</td>
+              <td>MANAGE 1.3 — Incident Response</td>
+              <td>Automated flag/block pipeline with SIEM integration and human review queue</td>
+            </tr>
+            <tr>
+              <td>ISO/IEC 42001:2023</td>
+              <td>6.1 — Risk Assessment</td>
+              <td>Adversarial training pipeline with continuous evaluation against novel attack vectors</td>
+            </tr>
+            <tr>
+              <td>ISO/IEC 42001:2023</td>
+              <td>9.1 — Performance Monitoring</td>
+              <td>Real-time detection dashboards with false positive/negative tracking and drift alerting</td>
+            </tr>
+            <tr>
+              <td>NIST SP 800-207</td>
+              <td>Zero Trust Architecture</td>
+              <td>Per-session continuous authentication across all communication channels</td>
+            </tr>
+            <tr>
+              <td>SOC 2 Type II</td>
+              <td>Availability &amp; Confidentiality</td>
+              <td>Cloud-agnostic deployment (AWS/Azure/GCP) with encrypted data pipelines</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+ 
+      <!-- BUSINESS IMPACT ─────────────────────────────────── -->
+      <div id="cs-impact">
+        <h2>Business Impact</h2>
+        <p>For a mid-market enterprise with $500M revenue, a single prevented deepfake fraud event at industry average loss rates represents a <strong>500×+ ROI</strong> on platform deployment.</p>
+ 
+        <div class="cs-compare fade-up">
+          <div class="cs-compare-col">
+            <div class="cs-compare-head before">✗ Without ZYFER</div>
+            <div class="cs-compare-body">
+              <ul>
+                <li>Deepfake impersonation undetectable by standard IAM/MFA</li>
+                <li>No audit trail for synthetic media interactions</li>
+                <li>Compliance gap against emerging AI governance mandates</li>
+                <li>Manual review of flagged sessions — no decision intelligence</li>
+                <li>Vulnerable to $25M+ single-incident loss events</li>
+              </ul>
+            </div>
+          </div>
+          <div class="cs-compare-col">
+            <div class="cs-compare-head after">✓ With ZYFER</div>
+            <div class="cs-compare-body">
+              <ul>
+                <li>99.9% detection rate across voice, video, and behavior</li>
+                <li>Full LIME/SHAP attribution on every flagged interaction</li>
+                <li>Mapped to NIST AI RMF, ISO 42001, NIST 800-207</li>
+                <li>HITL governance with automated triage and escalation</li>
+                <li>Sub-50ms real-time blocking across all communication channels</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- ARCHITECT PROFILE ───────────────────────────────── -->
+      <h2>Architect Profile</h2>
+      <div class="profile-card fade-up">
+        <div class="profile-col">
+          <h4>John McKenney</h4>
+          <p style="font-size:13px;margin-bottom:16px;">GRC Analyst · Cybersecurity Engineer<br>
+          <a href="https://github.com/jmckenney3563" target="_blank">github.com/jmckenney3563</a></p>
+ 
+          <h4>Certifications</h4>
+          <ul class="cert-list">
+            <li class="cert-item"><span class="cert-dot"></span> CompTIA A+</li>
+            <li class="cert-item"><span class="cert-dot"></span> CompTIA Network+</li>
+            <li class="cert-item"><span class="cert-dot"></span> CompTIA Security+</li>
+          </ul>
+ 
+          <h4 style="margin-top:16px;">Framework Fluency</h4>
+          <ul class="cert-list">
+            <li class="cert-item"><span class="cert-dot"></span> NIST AI RMF 1.0</li>
+            <li class="cert-item"><span class="cert-dot"></span> ISO/IEC 42001:2023</li>
+            <li class="cert-item"><span class="cert-dot"></span> ISO 27001:2022</li>
+            <li class="cert-item"><span class="cert-dot"></span> NIST SP 800-207</li>
+            <li class="cert-item"><span class="cert-dot"></span> SOC 2 Type II</li>
+          </ul>
+        </div>
+ 
+        <div class="profile-col">
+          <h4>Live Deliverables</h4>
+          <ul class="cert-list" style="margin-bottom:16px;">
+            <li class="cert-item"><span class="cert-dot"></span>
+              <a href="https://jmckenney3563.github.io/ZYFER_WEBSITE/" target="_blank">ZYFER — AI Deepfake Detection Platform</a>
+            </li>
+            <li class="cert-item"><span class="cert-dot"></span>
+              <a href="https://dalewoodfarmsllc.com" target="_blank">dalewoodfarmsllc.com</a> — e-commerce &amp; subscription platform
+            </li>
+            <li class="cert-item"><span class="cert-dot"></span>
+              <a href="https://cosbytowing.pro" target="_blank">cosbytowing.pro</a> — professional services site
+            </li>
+          </ul>
+ 
+          <h4>Technical Domains</h4>
+          <ul class="cert-list">
+            <li class="cert-item"><span class="cert-dot"></span> AI/ML detection &amp; adversarial robustness</li>
+            <li class="cert-item"><span class="cert-dot"></span> Zero-trust security architecture</li>
+            <li class="cert-item"><span class="cert-dot"></span> Cloud-native platform design</li>
+            <li class="cert-item"><span class="cert-dot"></span> GRC documentation &amp; framework mapping</li>
+            <li class="cert-item"><span class="cert-dot"></span> Explainable AI (LIME, SHAP)</li>
+          </ul>
+        </div>
+      </div>
+ 
+      <!-- DOWNLOAD CTA ────────────────────────────────────── -->
+      <div class="cs-cta fade-up" id="cs-download">
+        <div class="cs-cta-text">
+          <strong>Download the Full Technical Case Study</strong>
+          <span>Complete framework mapping, architecture diagrams, business impact analysis, and compliance documentation — formatted for employer and client review.</span>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a class="cs-btn"
+             href="https://github.com/jmckenney3563/ZYFER_WEBSITE/raw/main/ZYFER_Case_Study_McKenney.docx"
+             target="_blank">
+            ↓ Download .docx
+          </a>
+          <a class="cs-btn cs-btn-outline"
+             href="https://github.com/jmckenney3563/ZYFER_WEBSITE"
+             target="_blank">
+            View on GitHub
+          </a>
+        </div>
+      </div>
+ 
+    </section>
+    <!-- ── END CASE STUDY ─────────────────────────────────── -->
+ 
+    <hr class="divider" />
+ 
+    <!-- SECURITY ─────────────────────────────────────────── -->
+    <section class="doc-section" id="security">
+      <h2>Security, Privacy &amp; Compliance</h2>
+      <p>ZYFER is built to meet enterprise security and compliance requirements for sensitive communications protection.</p>
+ 
+      <h3>Standards &amp; Certifications</h3>
+      <div style="margin-bottom:20px;">
+        <span class="badge">SOC 2 Type II</span>
+        <span class="badge">ISO 27001:2022</span>
+        <span class="badge">GDPR</span>
+        <span class="badge">FIPS 140-2 L3</span>
+      </div>
+ 
+      <h3>Access &amp; Identity</h3>
+      <ul>
+        <li>Workspace-level roles and permissions (Analyst, Investigator, Admin)</li>
+        <li>Secure authentication with 2FA and hardware key support</li>
+        <li>Single sign-on (SSO) with SAML 2.0 and OIDC</li>
+        <li>SCIM user provisioning for automated team management</li>
+      </ul>
+ 
+      <h3>Platform Security &amp; Governance</h3>
+      <ul>
+        <li>Workspace-level administration and audit controls</li>
+        <li>Built-in detection guidance and security checks</li>
+        <li>Data processing controls and forensic retention policies</li>
+        <li>End-to-end encryption with customer-managed keys (CMK)</li>
+      </ul>
+    </section>
+ 
+    <hr class="divider" />
+ 
+    <!-- WORKFLOW ─────────────────────────────────────────── -->
+    <section class="doc-section" id="workflow">
+      <h2>Integration Workflow</h2>
+      <p>ZYFER adapts to how your security team works — not the other way around.</p>
+ 
+      <div class="workflow">
+        <div class="workflow-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Deploy Protection Layer</h3>
+            <p>Connect ZYFER to your communications infrastructure via API or native platform integration. Cloud-agnostic: AWS, Azure, GCP.</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Monitor Real-Time Dashboard</h3>
+            <p>Review detection results, confidence scores, and LIME/SHAP attribution reports as threats are identified.</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Sync Forensic Logs to SIEM</h3>
+            <p>Pipe detection data to Splunk, Microsoft Sentinel, IBM QRadar, or your existing SIEM automatically.</p>
+          </div>
+        </div>
+        <div class="workflow-step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h3>Respond, Investigate &amp; Audit</h3>
+            <p>Use HITL review queues, immutable audit trails, and court-admissible forensic reports to respond and document incidents.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <hr class="divider" />
+ 
+    <!-- RESOURCES ────────────────────────────────────────── -->
+    <section class="doc-section" id="resources">
+      <h2>Documentation Resources</h2>
+ 
+      <div class="card-grid">
+        <div class="card fade-up">
+          <span class="card-icon">🚀</span>
+          <h3>Getting Started</h3>
+          <p>Step-by-step tutorial to deploy your first ZYFER protection instance.</p>
+        </div>
+        <div class="card fade-up">
+          <span class="card-icon">⚙️</span>
+          <h3>Features</h3>
+          <p>ZYFER's core detection and forensics features in depth.</p>
+        </div>
+        <div class="card fade-up">
+          <span class="card-icon">🔗</span>
+          <h3>Integrations</h3>
+          <p>Connect ZYFER to your existing security stack and SIEM platforms.</p>
+        </div>
+        <div class="card fade-up">
+          <span class="card-icon">📡</span>
+          <h3>API Reference</h3>
+          <p>Complete REST API and webhook documentation for developers.</p>
+        </div>
+        <div class="card fade-up">
+          <span class="card-icon">💡</span>
+          <h3>Tips &amp; Tricks</h3>
+          <p>Get the most out of ZYFER's detection capabilities in production.</p>
+        </div>
+        <div class="card fade-up">
+          <span class="card-icon">📖</span>
+          <h3>Glossary</h3>
+          <p>Key terms in synthetic forensics, zero-trust, and AI governance.</p>
+        </div>
+      </div>
+    </section>
+ 
+  </main>
+</div>
+<!-- ── END PAGE WRAP ──────────────────────────────────────── -->
+ 
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer>
+  <p>
+    <span>ZYFER</span> — Zero-Trust sYnthEtic Forensics Engine for Reinforcement.<br>
+    Protecting enterprises from AI-generated impersonation attacks.<br><br>
+    © 2024–2025 ZYFER Security Solutions. All rights reserved.
+    · <a href="https://jmckenney3563.github.io/ZYFER_WEBSITE/index.html">Home</a>
+    · <a href="https://github.com/jmckenney3563/ZYFER_WEBSITE" target="_blank">GitHub</a>
+  </p>
+</footer>
+ 
+<script>
+  // ── Scroll animations ──────────────────────────────────
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+ 
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+ 
+  // ── Sidebar active link ────────────────────────────────
+  const sections = document.querySelectorAll('section[id], div[id]');
+  const sideLinks = document.querySelectorAll('.sidebar-links a');
+ 
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        sideLinks.forEach(a => a.classList.remove('active'));
+        const match = document.querySelector(`.sidebar-links a[href="#${e.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+ 
+  sections.forEach(s => sectionObserver.observe(s));
+ 
+  // ── Mobile nav toggle ──────────────────────────────────
+  document.querySelector('.nav-toggle').addEventListener('click', () => {
+    const links = document.querySelector('.nav-links');
+    const open = links.style.display === 'flex';
+    links.style.display = open ? '' : 'flex';
+    links.style.flexDirection = open ? '' : 'column';
+    links.style.position = open ? '' : 'absolute';
+    links.style.top = open ? '' : '60px';
+    links.style.right = open ? '' : '0';
+    links.style.background = open ? '' : 'var(--bg2)';
+    links.style.padding = open ? '' : '20px 28px';
+    links.style.border = open ? '' : '1px solid var(--border)';
+    links.style.gap = open ? '' : '16px';
+  });
+</script>
 </body>
 </html>
+ 
