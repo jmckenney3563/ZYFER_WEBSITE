@@ -6,6 +6,7 @@
     <title>ZYFER - Zero-Trust Synthetic Forensics Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -174,6 +175,92 @@
             opacity: 1;
             visibility: visible;
         }
+        
+        /* ─── Three.js Canvas Elements ─── */
+        #hero-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        #threat-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        #scan-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        #footer-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* ─── Terminal ─── */
+        .scan-terminal {
+            background: rgba(5,12,24,0.9);
+            border: 1px solid rgba(0,240,255,0.2);
+            border-radius: 14px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            overflow: hidden;
+        }
+        
+        .terminal-bar {
+            display: flex;
+            gap: 7px;
+            margin-bottom: 14px;
+        }
+        
+        .t-dot {
+            width: 11px; height: 11px;
+            border-radius: 50%;
+        }
+        
+        .terminal-line { color: rgba(255,255,255,0.5); }
+        .terminal-line.active { color: #00f0ff; }
+        .terminal-line.warn { color: #ffd166; }
+        .terminal-line.danger { color: #ef233c; }
+        .terminal-line.ok { color: #06d6a0; }
+        
+        /* ─── Threat Bars ─── */
+        .threat-level {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .threat-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+        
+        .threat-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width 1.5s ease;
+        }
     </style>
 </head>
 <body class="font-sans antialiased selection:bg-cyber-cyan selection:text-cyber-darker">
@@ -229,8 +316,7 @@
             <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-cyber-cyan/20 rounded-full blur-[128px] animate-pulse-glow"></div>
             <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyber-purple/20 rounded-full blur-[128px] animate-pulse-glow" style="animation-delay: 2s;"></div>
             
-            <!-- Floating Particles Container -->
-            <div id="particles" class="absolute inset-0"></div>
+            <canvas id="hero-canvas"></canvas>
             
             <!-- Grid Overlay -->
             <div class="absolute inset-0 bg-gradient-to-b from-transparent via-cyber-dark/50 to-cyber-dark"></div>
@@ -289,8 +375,9 @@
     </section>
 
     <!-- Architecture Section -->
-    <section id="architecture" class="relative py-24 hex-pattern">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="architecture" class="relative py-24 overflow-hidden">
+        <canvas id="threat-canvas"></canvas>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center mb-16 reveal">
                 <h2 class="text-sm font-mono text-cyber-cyan uppercase tracking-widest mb-4">System Architecture</h2>
                 <h3 class="text-3xl md:text-5xl font-bold text-white mb-6">Three-Layer Defense Matrix</h3>
@@ -398,8 +485,9 @@
     </section>
 
     <!-- Detection Capabilities -->
-    <section id="detection" class="relative py-24 bg-cyber-darker overflow-hidden">
+    <section id="detection" class="relative py-24 overflow-hidden" style="background: #050811;">
         <div class="absolute inset-0 cyber-grid opacity-30"></div>
+        <canvas id="scan-canvas"></canvas>
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid lg:grid-cols-2 gap-16 items-center">
@@ -444,32 +532,103 @@
                 </div>
                 
                 <div class="reveal relative" style="transition-delay: 0.2s;">
-                    <div class="relative rounded-2xl overflow-hidden glass-strong border border-white/10 aspect-video">
-                        <img src="http://static.photos/technology/1024x576/42" alt="AI Detection Interface" class="w-full h-full object-cover opacity-80">
-                        <div class="absolute inset-0 bg-gradient-to-t from-cyber-darker via-transparent to-transparent"></div>
-                        
-                        <!-- Animated Overlay Elements -->
-                        <div class="absolute top-4 right-4 flex items-center space-x-2 px-3 py-1 rounded-full bg-green-500/20 border border-green-500/50">
-                            <i data-lucide="shield" class="w-4 h-4 text-green-400"></i>
-                            <span class="text-xs font-mono text-green-400">PROTECTED</span>
-                        </div>
-                        
-                        <div class="absolute bottom-4 left-4 right-4">
-                            <div class="glass rounded-lg p-4 border border-white/10">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs font-mono text-slate-400">ANALYSIS STREAM</span>
-                                    <div class="flex space-x-1">
-                                        <div class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></div>
-                                        <div class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse" style="animation-delay: 0.2s"></div>
-                                        <div class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse" style="animation-delay: 0.4s"></div>
-                                    </div>
-                                </div>
-                                <div class="font-mono text-xs text-cyber-cyan space-y-1" id="analysis-log">
-                                    <div>&gt; Spectral analysis: PASS</div>
-                                    <div>&gt; Temporal consistency: PASS</div>
-                                    <div>&gt; Biometric match: VERIFIED</div>
-                                </div>
+                    <div class="relative rounded-2xl overflow-hidden glass-strong border border-white/10">
+                        <div class="flex items-center justify-between px-5 pt-4 pb-2">
+                            <span class="text-xs font-mono text-slate-500">// LIVE SCAN INTERFACE</span>
+                            <div class="flex items-center space-x-2 px-3 py-1 rounded-full bg-green-500/20 border border-green-500/50">
+                                <i data-lucide="shield" class="w-4 h-4 text-green-400"></i>
+                                <span class="text-xs font-mono text-green-400">PROTECTED</span>
                             </div>
+                        </div>
+                        <div class="px-5 pb-5">
+                            <div class="scan-terminal">
+                                <div class="terminal-bar">
+                                    <div class="t-dot" style="background:#ef233c"></div>
+                                    <div class="t-dot" style="background:#ffd166"></div>
+                                    <div class="t-dot" style="background:#06d6a0"></div>
+                                </div>
+                                <div id="terminal-output"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Threat Assessment Cards -->
+            <div class="mt-20 reveal">
+                <h2 class="text-sm font-mono text-cyber-cyan uppercase tracking-widest mb-4 text-center">Threat Intelligence</h2>
+                <h3 class="text-2xl md:text-4xl font-bold text-white mb-10 text-center">Real-Time Threat Assessment</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="glass-strong rounded-xl p-6 border border-white/10 hover:border-red-500/40 transition-all">
+                        <div class="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-4">
+                            <i data-lucide="mic" class="w-5 h-5 text-red-400"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-2">Voice Synthesis Detection</h4>
+                        <p class="text-slate-400 text-sm mb-3">Sub-millisecond spectral fingerprinting identifies AI-cloned voice patterns with 99.7% accuracy across 40+ synthesis models.</p>
+                        <div class="threat-level">
+                            <span class="text-red-400 text-xs">CRITICAL</span>
+                            <div class="threat-bar"><div class="threat-fill" style="width:0%;background:linear-gradient(90deg,#ef233c,#ff6b6b)" data-w="92%"></div></div>
+                            <span class="text-slate-500 text-xs">92%</span>
+                        </div>
+                    </div>
+                    <div class="glass-strong rounded-xl p-6 border border-white/10 hover:border-yellow-500/40 transition-all">
+                        <div class="w-10 h-10 rounded-lg bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mb-4">
+                            <i data-lucide="video" class="w-5 h-5 text-yellow-400"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-2">Deepfake Video Analysis</h4>
+                        <p class="text-slate-400 text-sm mb-3">Frame-by-frame neural artifact scanning detects generative inconsistencies invisible to the human eye in live streams.</p>
+                        <div class="threat-level">
+                            <span class="text-yellow-400 text-xs">HIGH</span>
+                            <div class="threat-bar"><div class="threat-fill" style="width:0%;background:linear-gradient(90deg,#ffd166,#f4a261)" data-w="74%"></div></div>
+                            <span class="text-slate-500 text-xs">74%</span>
+                        </div>
+                    </div>
+                    <div class="glass-strong rounded-xl p-6 border border-white/10 hover:border-green-500/40 transition-all">
+                        <div class="w-10 h-10 rounded-lg bg-green-500/10 border border-green-500/30 flex items-center justify-center mb-4">
+                            <i data-lucide="activity" class="w-5 h-5 text-green-400"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-2">Behavioral Manipulation</h4>
+                        <p class="text-slate-400 text-sm mb-3">Adaptive graph-based models track synthetic behavioral drift across sessions to flag social engineering at machine speed.</p>
+                        <div class="threat-level">
+                            <span class="text-green-400 text-xs">MODERATE</span>
+                            <div class="threat-bar"><div class="threat-fill" style="width:0%;background:linear-gradient(90deg,#06d6a0,#00f0ff)" data-w="45%"></div></div>
+                            <span class="text-slate-500 text-xs">45%</span>
+                        </div>
+                    </div>
+                    <div class="glass-strong rounded-xl p-6 border border-white/10 hover:border-purple-500/40 transition-all">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mb-4">
+                            <i data-lucide="network" class="w-5 h-5 text-purple-400"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-2">Network Topology Guard</h4>
+                        <p class="text-slate-400 text-sm mb-3">Maps live adversarial infrastructure and blocks synthetic identity injection vectors at the perimeter.</p>
+                        <div class="threat-level">
+                            <span class="text-purple-400 text-xs">ACTIVE</span>
+                            <div class="threat-bar"><div class="threat-fill" style="width:0%;background:linear-gradient(90deg,#9b5de5,#c77dff)" data-w="58%"></div></div>
+                            <span class="text-slate-500 text-xs">58%</span>
+                        </div>
+                    </div>
+                    <div class="glass-strong rounded-xl p-6 border border-white/10 hover:border-cyan-500/40 transition-all">
+                        <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mb-4">
+                            <i data-lucide="shield-check" class="w-5 h-5 text-cyan-400"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-2">Zero-Trust Enforcement</h4>
+                        <p class="text-slate-400 text-sm mb-3">Every access request is cryptographically verified against biometric baselines — no implicit trust at any layer.</p>
+                        <div class="threat-level">
+                            <span class="text-cyan-400 text-xs">ENFORCED</span>
+                            <div class="threat-bar"><div class="threat-fill" style="width:0%;background:linear-gradient(90deg,#00f0ff,#9b5de5)" data-w="100%"></div></div>
+                            <span class="text-slate-500 text-xs">100%</span>
+                        </div>
+                    </div>
+                    <div class="glass-strong rounded-xl p-6 border border-white/10 hover:border-yellow-500/40 transition-all">
+                        <div class="w-10 h-10 rounded-lg bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mb-4">
+                            <i data-lucide="zap" class="w-5 h-5 text-yellow-400"></i>
+                        </div>
+                        <h4 class="text-white font-semibold mb-2">Adaptive Response Protocol</h4>
+                        <p class="text-slate-400 text-sm mb-3">Self-healing security fabric dynamically reroutes traffic, quarantines synthetic agents, and patches exploits autonomously.</p>
+                        <div class="threat-level">
+                            <span class="text-yellow-400 text-xs">RUNNING</span>
+                            <div class="threat-bar"><div class="threat-fill" style="width:0%;background:linear-gradient(90deg,#ffd166,#06d6a0)" data-w="67%"></div></div>
+                            <span class="text-slate-500 text-xs">67%</span>
                         </div>
                     </div>
                 </div>
@@ -517,9 +676,10 @@
     <section class="relative py-24 overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-b from-cyber-dark to-cyber-darker"></div>
         <div class="absolute inset-0 cyber-grid opacity-20"></div>
+        <canvas id="footer-canvas"></canvas>
         
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center reveal">
-            <div class="glass-strong rounded-3xl p-12 border border-cyber-cyan/20 relative overflow-hidden">
+            <div class="glass-strong rounded-3xl p-12 border border-cyber-cyan/20 relative overflow-hidden z-10">
                 <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-cyber-cyan/5 to-cyber-purple/5"></div>
                 
                 <h2 class="text-3xl md:text-5xl font-bold text-white mb-6 relative z-10">Ready to Secure Your Communications?</h2>
@@ -630,28 +790,7 @@
             document.getElementById('demo-modal').classList.remove('active');
         }
         
-        // Particle Animation
-        function createParticles() {
-            const container = document.getElementById('particles');
-            const particleCount = 30;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animation = `float ${6 + Math.random() * 4}s ease-in-out infinite`;
-                particle.style.animationDelay = Math.random() * 5 + 's';
-                
-                // Random size
-                const size = 2 + Math.random() * 4;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                particle.style.opacity = 0.2 + Math.random() * 0.4;
-                
-                container.appendChild(particle);
-            }
-        }
+        // Particle Animation handled by Three.js hero-canvas
         
         // Scroll Animations
         function revealOnScroll() {
@@ -678,43 +817,24 @@
             }
         }
         
-        // Analysis Log Animation
-        function animateAnalysisLog() {
-            const logs = [
-                '&gt; Spectral analysis: PASS',
-                '&gt; Temporal consistency: PASS', 
-                '&gt; Biometric match: VERIFIED',
-                '&gt; Neural confidence: 99.7%',
-                '&gt; Threat assessment: CLEAR'
-            ];
-            
-            const container = document.getElementById('analysis-log');
-            let index = 0;
-            
-            setInterval(() => {
-                if (container) {
-                    const div = document.createElement('div');
-                    div.textContent = logs[index % logs.length];
-                    div.style.color = '#00f0ff';
-                    container.appendChild(div);
-                    
-                    if (container.children.length > 5) {
-                        container.removeChild(container.firstChild);
-                    }
-                    
-                    index++;
-                }
-            }, 2000);
-        }
+        // Analysis Log Animation handled by Terminal Typewriter
         
         // Demo Interaction
         function activateDemo(type) {
-            const logs = document.getElementById('analysis-log');
-            if (logs) {
-                logs.innerHTML = `<div style="color: #fbbf24;">&gt; Initiating ${type} analysis...</div>`;
+            const output = document.getElementById('terminal-output');
+            if (output) {
+                const div = document.createElement('div');
+                div.className = 'terminal-line warn';
+                div.textContent = `> Initiating ${type} analysis...`;
+                output.appendChild(div);
+                output.scrollTop = output.scrollHeight;
                 setTimeout(() => {
-                    logs.innerHTML += `<div style="color: #00f0ff;">&gt; ${type.toUpperCase()} scan complete: AUTHENTIC</div>`;
-                }, 1000);
+                    const div2 = document.createElement('div');
+                    div2.className = 'terminal-line ok';
+                    div2.textContent = `> ${type.toUpperCase()} scan complete: AUTHENTIC`;
+                    output.appendChild(div2);
+                    output.scrollTop = output.scrollHeight;
+                }, 1200);
             }
         }
         
@@ -739,9 +859,7 @@
         });
         
         window.addEventListener('load', () => {
-            createParticles();
             revealOnScroll();
-            animateAnalysisLog();
             
             // Add active class to stats for animation
             setTimeout(() => {
@@ -759,6 +877,380 @@
                 }
             });
         });
+
+        // ═══════════════════════════════════════
+        // HERO CANVAS — Three.js Threat Network
+        // ═══════════════════════════════════════
+        (function() {
+            const canvas = document.getElementById('hero-canvas');
+            if (!canvas) return;
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+            camera.position.set(0, 0, 28);
+            function resize() {
+                const w = canvas.parentElement.clientWidth;
+                const h = canvas.parentElement.clientHeight;
+                renderer.setSize(w, h);
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const ptCount = 1800;
+            const ptGeo = new THREE.BufferGeometry();
+            const ptPos = new Float32Array(ptCount * 3);
+            const ptSpeeds = new Float32Array(ptCount);
+            for (let i = 0; i < ptCount; i++) {
+                ptPos[i * 3]     = (Math.random() - .5) * 80;
+                ptPos[i * 3 + 1] = (Math.random() - .5) * 60;
+                ptPos[i * 3 + 2] = (Math.random() - .5) * 40;
+                ptSpeeds[i] = Math.random() * 0.008 + 0.002;
+            }
+            ptGeo.setAttribute('position', new THREE.BufferAttribute(ptPos, 3));
+            const ptMat = new THREE.PointsMaterial({ color: 0x00f0ff, size: 0.12, transparent: true, opacity: 0.55 });
+            scene.add(new THREE.Points(ptGeo, ptMat));
+
+            const nodes = [];
+            const nodeGroup = new THREE.Group();
+            scene.add(nodeGroup);
+            const nodeColors = [0x00f0ff, 0x9b5de5, 0xef233c, 0xffd166, 0x06d6a0];
+            for (let i = 0; i < 18; i++) {
+                const geo = new THREE.SphereGeometry(Math.random() * 0.35 + 0.2, 16, 16);
+                const col = nodeColors[Math.floor(Math.random() * nodeColors.length)];
+                const mat = new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 0.6, roughness: 0.2, metalness: 0.8 });
+                const mesh = new THREE.Mesh(geo, mat);
+                const r = 8 + Math.random() * 8;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                mesh.position.set(r * Math.sin(phi) * Math.cos(theta), r * Math.sin(phi) * Math.sin(theta) * 0.6, r * Math.cos(phi));
+                nodeGroup.add(mesh);
+                nodes.push({ mesh, speed: Math.random() * 0.003 + 0.001, phase: Math.random() * Math.PI * 2, col });
+            }
+
+            const coreGeo = new THREE.SphereGeometry(1.2, 32, 32);
+            const coreMat = new THREE.MeshStandardMaterial({ color: 0x00f0ff, emissive: 0x00f0ff, emissiveIntensity: 0.4, roughness: 0.1, metalness: 0.9 });
+            const core = new THREE.Mesh(coreGeo, coreMat);
+            scene.add(core);
+
+            const shellGeo = new THREE.IcosahedronGeometry(2.2, 1);
+            const shell = new THREE.Mesh(shellGeo, new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true, transparent: true, opacity: 0.12 }));
+            scene.add(shell);
+
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(4, 0.03, 8, 120), new THREE.MeshBasicMaterial({ color: 0x9b5de5, transparent: true, opacity: 0.3 }));
+            ring.rotation.x = Math.PI / 3;
+            scene.add(ring);
+            const ring2 = new THREE.Mesh(new THREE.TorusGeometry(5.5, 0.02, 8, 120), new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.15 }));
+            ring2.rotation.x = Math.PI / 5; ring2.rotation.z = Math.PI / 6;
+            scene.add(ring2);
+
+            const lineGroup = new THREE.Group();
+            scene.add(lineGroup);
+            function rebuildLines() {
+                lineGroup.clear();
+                nodes.forEach(n => {
+                    if (Math.random() > 0.4) {
+                        const pts = [new THREE.Vector3(0,0,0), n.mesh.position.clone()];
+                        const lg = new THREE.BufferGeometry().setFromPoints(pts);
+                        lineGroup.add(new THREE.Line(lg, new THREE.LineBasicMaterial({ color: n.col, transparent: true, opacity: Math.random() * 0.25 + 0.05 })));
+                    }
+                });
+            }
+            rebuildLines();
+            setInterval(rebuildLines, 2500);
+
+            const scanRingMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0, side: THREE.DoubleSide });
+            const scanRing = new THREE.Mesh(new THREE.RingGeometry(0, 14, 64), scanRingMat);
+            scanRing.rotation.x = -Math.PI / 2;
+            scene.add(scanRing);
+            let scanScale = 0, scanActive = false;
+            setInterval(() => { scanScale = 0; scanActive = true; }, 3000);
+
+            scene.add(new THREE.AmbientLight(0x112244, 1));
+            const pLight = new THREE.PointLight(0x00f0ff, 2, 50);
+            pLight.position.set(0, 0, 10);
+            scene.add(pLight);
+            const pLight2 = new THREE.PointLight(0x9b5de5, 1.5, 40);
+            pLight2.position.set(10, 5, 5);
+            scene.add(pLight2);
+
+            let mouse = { x: 0, y: 0 };
+            window.addEventListener('mousemove', e => {
+                mouse.x = (e.clientX / window.innerWidth - .5) * 2;
+                mouse.y = -(e.clientY / window.innerHeight - .5) * 2;
+            });
+
+            let t = 0;
+            function animate() {
+                requestAnimationFrame(animate);
+                t += 0.006;
+                nodeGroup.rotation.y = t * 0.18 + mouse.x * 0.3;
+                nodeGroup.rotation.x = Math.sin(t * 0.12) * 0.15 + mouse.y * 0.15;
+                nodes.forEach(n => { n.mesh.scale.setScalar(1 + Math.sin(t * 2 + n.phase) * 0.15); });
+                core.scale.setScalar(1 + Math.sin(t * 1.8) * 0.08);
+                coreMat.emissiveIntensity = 0.3 + Math.sin(t * 2) * 0.2;
+                shell.rotation.y = t * 0.4; shell.rotation.x = t * 0.25;
+                ring.rotation.z = t * 0.2; ring2.rotation.y = t * 0.15;
+                const pa = ptGeo.attributes.position.array;
+                for (let i = 0; i < ptCount; i++) { pa[i * 3 + 1] += ptSpeeds[i] * 0.3; if (pa[i * 3 + 1] > 30) pa[i * 3 + 1] = -30; }
+                ptGeo.attributes.position.needsUpdate = true;
+                if (scanActive) { scanScale += 0.018; scanRing.scale.setScalar(scanScale); scanRingMat.opacity = Math.max(0, 0.18 - scanScale * 0.013); if (scanScale > 14) { scanActive = false; scanRingMat.opacity = 0; } }
+                camera.position.x = mouse.x * 1.5; camera.position.y = mouse.y * 0.8;
+                camera.lookAt(0, 0, 0);
+                renderer.render(scene, camera);
+            }
+            animate();
+        })();
+
+        // ═══════════════════════════════════════
+        // THREAT-VIZ CANVAS — Animated Hex Grid
+        // ═══════════════════════════════════════
+        (function() {
+            const canvas = document.getElementById('threat-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            function resize() { canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight; }
+            resize();
+            window.addEventListener('resize', resize);
+            const HEX_R = 32;
+            const hexes = [];
+            function buildHexes() {
+                hexes.length = 0;
+                const w = canvas.width, h = canvas.height;
+                const cols = Math.ceil(w / (HEX_R * 1.75)) + 2;
+                const rows = Math.ceil(h / (HEX_R * 1.5)) + 2;
+                for (let r = -1; r < rows; r++) {
+                    for (let c = -1; c < cols; c++) {
+                        const x = c * HEX_R * 1.75 + (r % 2 === 0 ? 0 : HEX_R * 0.875);
+                        const y = r * HEX_R * 1.5;
+                        hexes.push({ x, y, pulse: Math.random() * Math.PI * 2, speed: Math.random() * 0.012 + 0.004, active: Math.random() < 0.06 });
+                    }
+                }
+            }
+            buildHexes();
+            window.addEventListener('resize', buildHexes);
+            function drawHex(x, y, r, opacity, fill) {
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const a = Math.PI / 180 * (60 * i - 30);
+                    const px = x + r * Math.cos(a), py = y + r * Math.sin(a);
+                    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+                if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+                ctx.strokeStyle = `rgba(0,240,255,${opacity})`;
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+            }
+            let t = 0;
+            function animate() {
+                requestAnimationFrame(animate);
+                t += 0.008;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                hexes.forEach(h => {
+                    h.pulse += h.speed;
+                    const o = 0.04 + Math.abs(Math.sin(h.pulse)) * 0.06;
+                    const fill = h.active ? `rgba(0,240,255,${0.03 + Math.abs(Math.sin(h.pulse)) * 0.05})` : null;
+                    drawHex(h.x, h.y, HEX_R - 1, o, fill);
+                });
+            }
+            animate();
+        })();
+
+        // ═══════════════════════════════════════
+        // SCAN CANVAS — 3D Radar / Topology Map
+        // ═══════════════════════════════════════
+        (function() {
+            const canvas = document.getElementById('scan-canvas');
+            if (!canvas) return;
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 500);
+            camera.position.set(0, 12, 20);
+            camera.lookAt(0, 0, 0);
+            function resize() {
+                const w = canvas.parentElement.clientWidth;
+                const h = canvas.parentElement.clientHeight;
+                renderer.setSize(w, h);
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const gridHelper = new THREE.GridHelper(40, 30, 0x00f0ff, 0x112244);
+            gridHelper.material.transparent = true; gridHelper.material.opacity = 0.15;
+            scene.add(gridHelper);
+
+            const radarGroup = new THREE.Group();
+            scene.add(radarGroup);
+            const radarRing = new THREE.Mesh(new THREE.RingGeometry(0, 10, 64), new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.03, side: THREE.DoubleSide }));
+            radarRing.rotation.x = -Math.PI / 2;
+            radarGroup.add(radarRing);
+            for (let r = 2.5; r <= 10; r += 2.5) {
+                const c = new THREE.Mesh(new THREE.RingGeometry(r - 0.02, r, 64), new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.1, side: THREE.DoubleSide }));
+                c.rotation.x = -Math.PI / 2;
+                radarGroup.add(c);
+            }
+            const sweepLine = new THREE.Line(
+                new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(10, 0, 0)]),
+                new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.7 })
+            );
+            radarGroup.add(sweepLine);
+
+            const blips = [];
+            const blipColors = [0xef233c, 0xffd166, 0xef233c, 0x06d6a0];
+            for (let i = 0; i < 12; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.random() * 9 + 0.5;
+                const bc = blipColors[Math.floor(Math.random() * blipColors.length)];
+                const bMesh = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), new THREE.MeshStandardMaterial({ color: bc, emissive: bc, emissiveIntensity: 1 }));
+                bMesh.position.set(Math.cos(angle) * dist, 0, Math.sin(angle) * dist);
+                scene.add(bMesh);
+                blips.push({ mesh: bMesh, angle, dist, phase: Math.random() * Math.PI * 2, visible: false });
+            }
+            blips.slice(0, 4).forEach(b => {
+                const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 4, 8), new THREE.MeshBasicMaterial({ color: 0xef233c, transparent: true, opacity: 0.3 }));
+                beam.position.copy(b.mesh.position); beam.position.y = 2;
+                scene.add(beam);
+            });
+
+            scene.add(new THREE.AmbientLight(0x112244, 2));
+            const pL = new THREE.PointLight(0x00f0ff, 3, 30);
+            pL.position.set(0, 6, 0);
+            scene.add(pL);
+
+            let sweepAngle = 0;
+            function animate() {
+                requestAnimationFrame(animate);
+                sweepAngle += 0.018;
+                sweepLine.rotation.y = sweepAngle;
+                blips.forEach(b => {
+                    const da = ((sweepAngle % (Math.PI * 2)) - Math.atan2(b.mesh.position.z, b.mesh.position.x) + Math.PI * 4) % (Math.PI * 2);
+                    if (da < 0.08) { b.mesh.material.emissiveIntensity = 2; b.visible = true; }
+                    else { b.mesh.material.emissiveIntensity = Math.max(0.3, b.mesh.material.emissiveIntensity - 0.01); }
+                    b.mesh.scale.setScalar(1 + Math.sin(Date.now() * 0.003 + b.phase) * 0.25);
+                });
+                renderer.render(scene, camera);
+            }
+            animate();
+        })();
+
+        // ═══════════════════════════════════════
+        // FOOTER CANVAS — DNA Helix + Shield
+        // ═══════════════════════════════════════
+        (function() {
+            const canvas = document.getElementById('footer-canvas');
+            if (!canvas) return;
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
+            camera.position.set(0, 0, 22);
+            function resize() {
+                const w = canvas.parentElement.clientWidth;
+                const h = canvas.parentElement.clientHeight;
+                renderer.setSize(w, h);
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const helixGroup = new THREE.Group();
+            scene.add(helixGroup);
+            const helixPts1 = [], helixPts2 = [];
+            for (let i = 0; i < 80; i++) {
+                const t = (i / 80) * Math.PI * 6 - Math.PI * 3;
+                helixPts1.push(new THREE.Vector3(Math.cos(t) * 5, t * 0.8, Math.sin(t) * 5));
+                helixPts2.push(new THREE.Vector3(Math.cos(t + Math.PI) * 5, t * 0.8, Math.sin(t + Math.PI) * 5));
+            }
+            helixGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(helixPts1), new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.25 })));
+            helixGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(helixPts2), new THREE.LineBasicMaterial({ color: 0x9b5de5, transparent: true, opacity: 0.25 })));
+            for (let i = 0; i < 80; i += 8) {
+                helixGroup.add(new THREE.Line(
+                    new THREE.BufferGeometry().setFromPoints([helixPts1[i], helixPts2[i]]),
+                    new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.12 })
+                ));
+            }
+
+            const shield = new THREE.Mesh(
+                new THREE.DodecahedronGeometry(2.5, 0),
+                new THREE.MeshStandardMaterial({ color: 0x00f0ff, emissive: 0x00f0ff, emissiveIntensity: 0.2, roughness: 0.1, metalness: 0.9, wireframe: true, transparent: true, opacity: 0.4 })
+            );
+            scene.add(shield);
+            scene.add(new THREE.AmbientLight(0x112244, 2));
+            const pL = new THREE.PointLight(0x00f0ff, 2, 40);
+            pL.position.set(0, 5, 10);
+            scene.add(pL);
+
+            let t = 0;
+            function animate() {
+                requestAnimationFrame(animate);
+                t += 0.005;
+                helixGroup.rotation.y = t * 0.3;
+                shield.rotation.y = t * 0.5;
+                shield.rotation.x = t * 0.3;
+                shield.position.y = Math.sin(t) * 0.4;
+                renderer.render(scene, camera);
+            }
+            animate();
+        })();
+
+        // ═══════════════════════════════════════
+        // TERMINAL TYPEWRITER
+        // ═══════════════════════════════════════
+        (function() {
+            const output = document.getElementById('terminal-output');
+            if (!output) return;
+            const lines = [
+                { text: '> ZYFER v4.1.2 — Initializing threat scan...', cls: 'active' },
+                { text: '> Mapping network topology... ████████ 100%', cls: 'ok' },
+                { text: '> Loading biometric baselines [4 modalities]', cls: 'terminal-line' },
+                { text: '> Synthetic voice detector: ARMED', cls: 'ok' },
+                { text: '> Deepfake frame scanner: ARMED', cls: 'ok' },
+                { text: '> ⚠ Anomaly detected — IP 84.21.118.9', cls: 'warn' },
+                { text: '> Behavioral graph drift score: 0.87 (CRITICAL)', cls: 'danger' },
+                { text: '> AI voice clone probability: 94.2%', cls: 'danger' },
+                { text: '> Quarantining synthetic agent...', cls: 'warn' },
+                { text: '> ✓ Threat neutralized in 41ms', cls: 'ok' },
+                { text: '> Zero-trust policy enforced across 3 layers', cls: 'ok' },
+                { text: '> Resuming perimeter sweep...', cls: 'active' },
+                { text: '> All systems nominal. Monitoring active.', cls: 'ok' },
+            ];
+            let li = 0;
+            function addLine() {
+                if (!document.getElementById('terminal-output')) return;
+                if (li >= lines.length) { li = 0; output.innerHTML = ''; }
+                const div = document.createElement('div');
+                div.className = 'terminal-line ' + lines[li].cls;
+                div.textContent = lines[li].text;
+                output.appendChild(div);
+                output.scrollTop = output.scrollHeight;
+                li++;
+                setTimeout(addLine, 700 + Math.random() * 600);
+            }
+            setTimeout(addLine, 800);
+        })();
+
+        // ═══════════════════════════════════════
+        // THREAT BAR ANIMATION ON SCROLL
+        // ═══════════════════════════════════════
+        (function() {
+            const bars = document.querySelectorAll('.threat-fill');
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.style.width = e.target.dataset.w;
+                        obs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+            bars.forEach(b => obs.observe(b));
+        })();
     </script>
 <script src="https://deepsite.hf.co/deepsite-badge.js"></script>
 </body>
