@@ -1253,6 +1253,9 @@
         })();
     </script>
     <script>
+    // ==========================================
+    // STEP 1: UI STATE MACHINE CONFIGURATION
+    // ==========================================
     const UI_STATES = {
       IDLE: 'idle',
       PROCESSING: 'processing',
@@ -1261,20 +1264,26 @@
 
     let currentUiState = UI_STATES.IDLE;
 
+    /**
+     * Toggles the visible dashboard panels and updates action button states
+     * @param {string} nextState - Target state from UI_STATES
+     */
     function setUiState(nextState) {
       currentUiState = nextState;
       
-      // Update display panels
+      // Toggle visibility of panels matching the naming convention: id="panel-[state]"
       document.querySelectorAll('.demo-panel').forEach(panel => {
         panel.style.display = panel.id === `panel-${nextState}` ? 'block' : 'none';
       });
       
-      // Handle action button formatting toggles
+      // Manage footer action button styling and text dynamically
       const actionButton = document.getElementById('start-analysis-btn');
-      if (nextState === 'processing') {
+      if (!actionButton) return;
+
+      if (nextState === UI_STATES.PROCESSING) {
         actionButton.disabled = true;
         actionButton.innerText = "Processing...";
-      } else if (nextState === 'completed') {
+      } else if (nextState === UI_STATES.COMPLETED) {
         actionButton.innerText = "Run New Analysis";
         actionButton.disabled = false;
       } else {
@@ -1282,6 +1291,73 @@
         actionButton.disabled = false;
       }
     }
+
+    // ==========================================
+    // STEP 2: FILE BINDING & API EVENT HANDLING
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      const actionButton = document.getElementById('start-analysis-btn');
+      const fileInput = document.getElementById('media-upload-input');
+
+      if (!actionButton) {
+        console.error("Initialization Error: 'start-analysis-btn' not found in DOM.");
+        return;
+      }
+
+      // Intercept click actions on the primary modal trigger button
+      actionButton.addEventListener('click', async () => {
+        
+        // Context A: If an analysis just finished, clicking resets the interface back to idle
+        if (currentUiState === UI_STATES.COMPLETED) {
+          setUiState(UI_STATES.IDLE);
+          if (fileInput) fileInput.value = ''; // Clear selected binary from file buffer
+          return;
+        }
+
+        // Context B: Run the ingestion request pipeline
+        const file = fileInput ? fileInput.files[0] : null;
+        
+        // Boundary Guard: Reject execution if no file is present in the drop zone
+        if (!file) {
+          alert("Please drop a file or browse to select one first.");
+          return;
+        }
+
+        // Bundle media object into standard multipart request format
+        const formData = new FormData();
+        formData.append('media', file);
+
+        // Transition interface immediately into the non-blocking processing panel view
+        setUiState(UI_STATES.PROCESSING);
+
+        try {
+          // Execute non-blocking POST upload to your local FastAPI ingestion endpoint
+          const response = await fetch('http://localhost:3000/api/v1/detection/verify-media', {
+            method: 'POST',
+            // Note: Content-Type header is omitted intentionally; browser sets boundary flags automatically
+            body: formData
+          });
+
+          if (!response.ok) {
+            throw new Error(`Gateway socket returned status code: ${response.status}`);
+          }
+
+          const data = await response.json(); // Expected payload shape: {"job_id": "uuid", "status": "queued"}
+          
+          console.log("Job successfully enqueued into RabbitMQ channel. Tracking ID:", data.job_id);
+          
+          // ============================================================
+          // STEP 3 PREPARATION: Connect the background loop here next
+          // ============================================================
+          // startStatusPolling(data.job_id); 
+
+        } catch (error) {
+          console.error("ZYFER Integration Network Error:", error);
+          alert("Upload failed. Ensure your local backend API gateway is online on port 3000.");
+          setUiState(UI_STATES.IDLE);
+        }
+      });
+    });
   </script>
 </body>
 </html>
