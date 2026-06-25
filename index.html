@@ -1252,5 +1252,36 @@
             bars.forEach(b => obs.observe(b));
         })();
     </script>
+    <script>
+    const UI_STATES = {
+      IDLE: 'idle',
+      PROCESSING: 'processing',
+      COMPLETED: 'completed'
+    };
+
+    let currentUiState = UI_STATES.IDLE;
+
+    function setUiState(nextState) {
+      currentUiState = nextState;
+      
+      // Update display panels
+      document.querySelectorAll('.demo-panel').forEach(panel => {
+        panel.style.display = panel.id === `panel-${nextState}` ? 'block' : 'none';
+      });
+      
+      // Handle action button formatting toggles
+      const actionButton = document.getElementById('start-analysis-btn');
+      if (nextState === 'processing') {
+        actionButton.disabled = true;
+        actionButton.innerText = "Processing...";
+      } else if (nextState === 'completed') {
+        actionButton.innerText = "Run New Analysis";
+        actionButton.disabled = false;
+      } else {
+        actionButton.innerText = "Start Analysis";
+        actionButton.disabled = false;
+      }
+    }
+  </script>
 </body>
 </html>
