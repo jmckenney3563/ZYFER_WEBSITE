@@ -1273,7 +1273,6 @@
       
       // Toggle visibility of panels matching the naming convention: id="panel-[state]"
       document.querySelectorAll('.demo-panel').forEach(panel => {
-        // Tailwind compatibility patch: toggle both inline block and the 'hidden' class utility
         if (panel.id === `panel-${nextState}`) {
           panel.style.display = 'block';
           panel.classList.remove('hidden');
@@ -1360,12 +1359,12 @@
 
       const scoreDisplay = document.getElementById('live-confidence-score');
       const verdictBanner = document.getElementById('verdict-banner');
-      const liveConsole = document.getElementById('zyfer-console-terminal'); // Target live console window element if present on page
+      const liveConsole = document.getElementById('zyfer-console-terminal'); // Target live console feed box if present
 
       const anomalyScore = parseFloat(result.anomaly_score);
       const outputPercent = (anomalyScore * 100).toFixed(2) + "%";
 
-      // 1. Render numeric coefficient score text string string
+      // 1. Render numeric coefficient score text string
       if (scoreDisplay) {
         scoreDisplay.innerText = outputPercent;
       }
@@ -1395,12 +1394,32 @@
       }
     }
 
-    // ==========================================
-    // STEP 2: FILE BINDING & API EVENT HANDLING
-    // ==========================================
+    // ========================================================
+    // FILE BINDING, EVENT CHANNELS & CORE API INTERACTION
+    // ========================================================
     document.addEventListener('DOMContentLoaded', () => {
       const actionButton = document.getElementById('start-analysis-btn');
       const fileInput = document.getElementById('media-upload-input');
+      
+      // Target the outer dashed click/drop area container inside panel-idle
+      const dropZoneBox = document.querySelector('#panel-idle > div');
+
+      // FILE PICKER INTEGRATION FIX: Forward box clicks directly down to hidden input
+      if (dropZoneBox && fileInput) {
+        dropZoneBox.addEventListener('click', () => {
+          fileInput.click();
+        });
+
+        // VISUAL CONFIRMATION: Show file selection changes inside the UI instantly
+        fileInput.addEventListener('change', () => {
+          if (fileInput.files.length > 0) {
+            const textLabel = dropZoneBox.querySelector('p.text-white');
+            if (textLabel) {
+              textLabel.innerHTML = `📁 Selected: <span class="text-cyan-400 font-mono">${fileInput.files[0].name}</span>`;
+            }
+          }
+        });
+      }
 
       if (!actionButton) {
         console.error("Initialization Error: 'start-analysis-btn' not found in DOM.");
@@ -1413,7 +1432,12 @@
         // Context A: If an analysis just finished, clicking resets the interface back to idle
         if (currentUiState === UI_STATES.COMPLETED) {
           setUiState(UI_STATES.IDLE);
-          if (fileInput) fileInput.value = ''; // Clear selected binary from file buffer
+          if (fileInput) {
+            fileInput.value = ''; // Reset standard file buffer array
+            // Restore default helper text inside upload dashboard view
+            const textLabel = dropZoneBox ? dropZoneBox.querySelector('p.text-white') : null;
+            if (textLabel) textLabel.innerText = "Drop your media here or click to browse";
+          }
           return;
         }
 
