@@ -1273,7 +1273,14 @@
       
       // Toggle visibility of panels matching the naming convention: id="panel-[state]"
       document.querySelectorAll('.demo-panel').forEach(panel => {
-        panel.style.display = panel.id === `panel-${nextState}` ? 'block' : 'none';
+        // Tailwind compatibility patch: toggle both inline block and the 'hidden' class utility
+        if (panel.id === `panel-${nextState}`) {
+          panel.style.display = 'block';
+          panel.classList.remove('hidden');
+        } else {
+          panel.style.display = 'none';
+          panel.classList.add('hidden');
+        }
       });
       
       // Manage footer action button styling and text dynamically
@@ -1289,6 +1296,102 @@
       } else {
         actionButton.innerText = "Start Analysis";
         actionButton.disabled = false;
+      }
+    }
+
+    /**
+     * Updates the text inside the processing view to show active progress
+     * @param {string} text - The current status message to show the user
+     */
+    function updateProcessingStatusText(text) {
+      const statusElement = document.getElementById('processing-status-text');
+      if (statusElement) {
+        statusElement.innerText = text;
+      }
+    }
+
+    // ===================================================
+    // STEP 3 & 4: ASYNC POLLING LOOP & RESULTS RENDERING
+    // ===================================================
+    /**
+     * Intermittently queries the job completion endpoint every 2 seconds
+     * @param {string} jobId - The tracking ID returned by the API
+     */
+    function startStatusPolling(jobId) {
+      const pollInterval = setInterval(async () => {
+        try {
+          // Check James's lightweight status checking endpoint
+          const response = await fetch(`http://localhost:3000/api/v1/jobs/${jobId}`);
+          
+          if (!response.ok) {
+            throw new Error(`Status checker returned HTTP status: ${response.status}`);
+          }
+
+          const data = await response.json(); // Expected: { job_id, status, result }
+
+          // Condition A: Worker is still processing the media task inside RabbitMQ
+          if (data.status === 'processing' || data.status === 'queued') {
+            updateProcessingStatusText("Extracting biometric vectors & validating variances...");
+            return; 
+          }
+
+          // Condition B: Worker completed tasks and stored metrics successfully
+          if (data.status === 'completed' && data.result) {
+            clearInterval(pollInterval);
+            renderForensicResults(data.result);
+          }
+
+        } catch (error) {
+          console.error("Polling validation loop error:", error);
+          clearInterval(pollInterval);
+          alert("Lost connection to the tracking socket backend pipeline.");
+          setUiState(UI_STATES.IDLE);
+        }
+      }, 2000);
+    }
+
+    /**
+     * Unpacks final score data and injects it right into the presentation elements
+     * @param {Object} result - Inner object containing anomaly metrics
+     */
+    function renderForensicResults(result) {
+      // Transition interface views to show the complete results card panel container
+      setUiState(UI_STATES.COMPLETED);
+
+      const scoreDisplay = document.getElementById('live-confidence-score');
+      const verdictBanner = document.getElementById('verdict-banner');
+      const liveConsole = document.getElementById('zyfer-console-terminal'); // Target live console window element if present on page
+
+      const anomalyScore = parseFloat(result.anomaly_score);
+      const outputPercent = (anomalyScore * 100).toFixed(2) + "%";
+
+      // 1. Render numeric coefficient score text string string
+      if (scoreDisplay) {
+        scoreDisplay.innerText = outputPercent;
+      }
+
+      // 2. Evaluate critical scoring threshold rules (Critical Threshold >= 80%)
+      if (anomalyScore >= 0.80) {
+        // Toggle critical high-risk styling configurations
+        if (verdictBanner) {
+          verdictBanner.innerText = `ALERT VERDICT: ${result.verdict || 'SYNTHETIC_SPOOF'}`;
+          verdictBanner.className = "text-center font-bold text-xs tracking-wider uppercase py-2.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 mb-2";
+        }
+        
+        // Trigger red flashing pulse animation effect on your dashboard console feed if available
+        if (liveConsole) {
+          liveConsole.classList.add("console-critical-alert");
+        }
+      } else {
+        // Toggle standard nominal verified human styles
+        if (verdictBanner) {
+          verdictBanner.innerText = `VERDICT: ${result.verdict || 'VERIFIED_HUMAN'}`;
+          verdictBanner.className = "text-center font-bold text-xs tracking-wider uppercase py-2.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2";
+        }
+        
+        if (liveConsole) {
+          liveConsole.classList.remove("console-critical-alert");
+        }
       }
     }
 
@@ -1329,12 +1432,12 @@
 
         // Transition interface immediately into the non-blocking processing panel view
         setUiState(UI_STATES.PROCESSING);
+        updateProcessingStatusText("Ingesting media into forensics pipeline...");
 
         try {
           // Execute non-blocking POST upload to your local FastAPI ingestion endpoint
           const response = await fetch('http://localhost:3000/api/v1/detection/verify-media', {
             method: 'POST',
-            // Note: Content-Type header is omitted intentionally; browser sets boundary flags automatically
             body: formData
           });
 
@@ -1346,10 +1449,8 @@
           
           console.log("Job successfully enqueued into RabbitMQ channel. Tracking ID:", data.job_id);
           
-          // ============================================================
-          // STEP 3 PREPARATION: Connect the background loop here next
-          // ============================================================
-          // startStatusPolling(data.job_id); 
+          // ACTIVATING THE ACTIVE INTERVAL MONITORING TIMEOUT LOOP
+          startStatusPolling(data.job_id); 
 
         } catch (error) {
           console.error("ZYFER Integration Network Error:", error);
