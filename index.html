@@ -758,11 +758,15 @@
             <h3 class="text-2xl font-bold text-white mb-4">Interactive Demo</h3>
             <p class="text-slate-400 mb-6">Experience ZYFER's detection capabilities in real-time. Upload a sample or use our pre-configured test scenarios.</p>
             
-            <div class="border-2 border-dashed border-white/20 rounded-xl p-12 text-center hover:border-cyber-cyan/50 transition-colors cursor-pointer group">
-                <i data-lucide="upload-cloud" class="w-12 h-12 text-slate-500 group-hover:text-cyber-cyan mx-auto mb-4 transition-colors"></i>
-                <p class="text-slate-300 font-medium">Drop your media here or click to browse</p>
-                <p class="text-xs text-slate-500 mt-2">Supports MP4, WAV, WEBM (Max 100MB)</p>
+            <input type="file" id="media-upload-input" accept="video/mp4,audio/wav,audio/webm" class="hidden" />
+        
+        <div onclick="document.getElementById('media-upload-input').click()" class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center hover:border-cyan-500/50 transition-colors cursor-pointer group mb-6">
+            <div class="flex flex-col items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-cyan-500/10 group-hover:text-cyan-400 transition-colors">☁️</div>
+                <p class="text-white font-medium">Drop your media here or click to browse</p>
+                <p class="text-slate-500 text-xs">Supports MP4, WAV, WEBM (Max 100MB)</p>
             </div>
+        </div>
             
             <div class="mt-6 flex justify-end space-x-4">
                 <button onclick="closeDemoModal()" class="px-6 py-2 text-slate-400 hover:text-white transition-colors">Cancel</button>
