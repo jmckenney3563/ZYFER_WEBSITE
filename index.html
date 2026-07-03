@@ -1415,11 +1415,14 @@
         });
 
         // VISUAL CONFIRMATION: Show file selection changes inside the UI instantly
+      if (fileInput) {
         fileInput.addEventListener('change', () => {
           if (fileInput.files.length > 0) {
-            const textLabel = dropZoneBox.querySelector('p.text-white');
+            // TARGET FIX: Find the nearest descriptive paragraph text inside the modal window frame
+            const textLabel = document.querySelector('#demo-modal p.font-medium, #demo-modal p.text-white');
+            
             if (textLabel) {
-              textLabel.innerHTML = `📁 Selected: <span class="text-cyan-400 font-mono">${fileInput.files[0].name}</span>`;
+              textLabel.innerHTML = `📁 Selected: <span class="text-cyber-cyan font-mono">${fileInput.files[0].name}</span>`;
             }
           }
         });
@@ -1444,7 +1447,12 @@
           }
           return;
         }
-
+        const file = fileInput ? fileInput.files[0] : null;
+        
+        if (!file) {
+          alert("Please select a valid media asset file first.");
+          return;
+        }
         // Context B: Run the ingestion request pipeline
         const file = fileInput ? fileInput.files[0] : null;
         
