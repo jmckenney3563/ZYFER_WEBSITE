@@ -1414,15 +1414,22 @@
           fileInput.click();
         });
 
-        // VISUAL CONFIRMATION: Show file selection changes inside the UI instantly
+      // VISUAL CONFIRMATION: Show file selection changes inside the UI instantly
       if (fileInput) {
-        fileInput.addEventListener('change', () => {
+        fileInput.addEventListener('change', (event) => {
           if (fileInput.files.length > 0) {
-            // TARGET FIX: Find the nearest descriptive paragraph text inside the modal window frame
-            const textLabel = document.querySelector('#demo-modal p.font-medium, #demo-modal p.text-white');
+            
+            // BULLETPROOF RELATIVE SELECTOR:
+            // Look up the DOM tree from the file input to the nearest wrapper box, 
+            // then look back down for the main white text paragraph tag.
+            const containerBox = event.target.closest('div');
+            const textLabel = containerBox ? containerBox.querySelector('p.text-white, p.font-medium') : null;
             
             if (textLabel) {
-              textLabel.innerHTML = `📁 Selected: <span class="text-cyber-cyan font-mono">${fileInput.files[0].name}</span>`;
+              textLabel.innerHTML = `📁 Selected: <span class="text-cyan-400 font-mono">${fileInput.files[0].name}</span>`;
+            } else {
+              // Fallback debugging message to help us find the tag name if it still slips past
+              console.warn("ZYFER Debug: Found the file input change event, but could not locate the text label container.");
             }
           }
         });
