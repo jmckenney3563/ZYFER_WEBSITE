@@ -1416,20 +1416,17 @@
 
       // VISUAL CONFIRMATION: Show file selection changes inside the UI instantly
       if (fileInput) {
-        fileInput.addEventListener('change', (event) => {
+        fileInput.addEventListener('change', () => {
           if (fileInput.files.length > 0) {
             
-            // BULLETPROOF RELATIVE SELECTOR:
-            // Look up the DOM tree from the file input to the nearest wrapper box, 
-            // then look back down for the main white text paragraph tag.
-            const containerBox = event.target.closest('div');
-            const textLabel = containerBox ? containerBox.querySelector('p.text-white, p.font-medium') : null;
+            // DIRECT TARGET: Look inside the active idle panel view for the main white title paragraph
+            const textLabel = document.querySelector('#panel-idle p.text-white, #panel-idle p.font-medium, #demo-modal p.text-white');
             
             if (textLabel) {
               textLabel.innerHTML = `📁 Selected: <span class="text-cyan-400 font-mono">${fileInput.files[0].name}</span>`;
             } else {
-              // Fallback debugging message to help us find the tag name if it still slips past
-              console.warn("ZYFER Debug: Found the file input change event, but could not locate the text label container.");
+              // Dev emergency fallback: if selectors fail, alert the file name so you can still hit "Start Analysis"
+              console.warn("Target label not resolved in DOM. Selected file:", fileInput.files[0].name);
             }
           }
         });
