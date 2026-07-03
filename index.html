@@ -1414,19 +1414,28 @@
           fileInput.click();
         });
 
+   // ========================================================
+    // FILE BINDING, EVENT CHANNELS & CORE API INTERACTION
+    // ========================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      const actionButton = document.getElementById('start-analysis-btn');
+      const fileInput = document.getElementById('media-upload-input');
+
+      // ============================================================
+      // PASTE THE DYNAMIC HOOK RIGHT HERE (REPLACING THE OLD STATIC ONE):
+      // ============================================================
+      const BACKEND_API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3000'
+        : 'http://YOUR_VM_IP_ADDRESS:3000'; // Make sure to type your actual VM IP here!
+      // ============================================================
+
       // VISUAL CONFIRMATION: Show file selection changes inside the UI instantly
       if (fileInput) {
         fileInput.addEventListener('change', () => {
           if (fileInput.files.length > 0) {
-            
-            // DIRECT TARGET: Look inside the active idle panel view for the main white title paragraph
             const textLabel = document.querySelector('#panel-idle p.text-white, #panel-idle p.font-medium, #demo-modal p.text-white');
-            
             if (textLabel) {
               textLabel.innerHTML = `📁 Selected: <span class="text-cyan-400 font-mono">${fileInput.files[0].name}</span>`;
-            } else {
-              // Dev emergency fallback: if selectors fail, alert the file name so you can still hit "Start Analysis"
-              console.warn("Target label not resolved in DOM. Selected file:", fileInput.files[0].name);
             }
           }
         });
@@ -1437,46 +1446,28 @@
         return;
       }
 
-      // Intercept click actions on the primary modal trigger button
       actionButton.addEventListener('click', async () => {
-        
-        // Context A: If an analysis just finished, clicking resets the interface back to idle
         if (currentUiState === UI_STATES.COMPLETED) {
           setUiState(UI_STATES.IDLE);
-          if (fileInput) {
-            fileInput.value = ''; // Reset standard file buffer array
-            // Restore default helper text inside upload dashboard view
-            const textLabel = dropZoneBox ? dropZoneBox.querySelector('p.text-white') : null;
-            if (textLabel) textLabel.innerText = "Drop your media here or click to browse";
-          }
+          if (fileInput) fileInput.value = ''; 
           return;
         }
+
         const file = fileInput ? fileInput.files[0] : null;
-        
         if (!file) {
           alert("Please select a valid media asset file first.");
           return;
         }
-        // Context B: Run the ingestion request pipeline
-        const file = fileInput ? fileInput.files[0] : null;
-        
-        // Boundary Guard: Reject execution if no file is present in the drop zone
-        if (!file) {
-          alert("Please drop a file or browse to select one first.");
-          return;
-        }
 
-        // Bundle media object into standard multipart request format
         const formData = new FormData();
         formData.append('media', file);
 
-        // Transition interface immediately into the non-blocking processing panel view
         setUiState(UI_STATES.PROCESSING);
         updateProcessingStatusText("Ingesting media into forensics pipeline...");
 
         try {
-          // Execute non-blocking POST upload to your local FastAPI ingestion endpoint
-          const response = await fetch('http://localhost:3000/api/v1/detection/verify-media', {
+          // Dynamic integration endpoint mapping
+          const response = await fetch(`${BACKEND_API_BASE}/api/v1/detection/verify-media`, {
             method: 'POST',
             body: formData
           });
@@ -1485,18 +1476,42 @@
             throw new Error(`Gateway socket returned status code: ${response.status}`);
           }
 
-          const data = await response.json(); // Expected payload shape: {"job_id": "uuid", "status": "queued"}
-          
+          const data = await response.json();
           console.log("Job successfully enqueued into RabbitMQ channel. Tracking ID:", data.job_id);
           
-          // ACTIVATING THE ACTIVE INTERVAL MONITORING TIMEOUT LOOP
-          startStatusPolling(data.job_id); 
+          // Pass base API address into polling engine context
+          startStatusPolling(data.job_id, BACKEND_API_BASE); 
 
         } catch (error) {
           console.error("ZYFER Integration Network Error:", error);
-          alert("Upload failed. Ensure your local backend API gateway is online on port 3000.");
+          alert("Ingestion gateway unreachable. Ensure your backend FastAPI service is bound to 0.0.0.0 and listening on port 3000.");
           setUiState(UI_STATES.IDLE);
         }
+      });
+    });
+
+    // Make sure to update your polling loop configuration to receive the base url variable:
+    function startStatusPolling(jobId, apiBaseUrl) {
+      const pollInterval = setInterval(async () => {
+        try {
+          const response = await fetch(`${apiBaseUrl}/api/v1/jobs/${jobId}`);
+          if (!response.ok) throw new Error(`Status query dropped: ${response.status}`);
+          
+          const data = await response.json();
+          if (data.status === 'processing' || data.status === 'queued') {
+            updateProcessingStatusText("Extracting biometric vectors & validating variances...");
+            return; 
+          }
+          if (data.status === 'completed' && data.result) {
+            clearInterval(pollInterval);
+            renderForensicResults(data.result);
+          }
+        } catch (error) {
+          console.error("Polling resolution tracking error:", error);
+          clearInterval(pollInterval);
+        }
+      }, 2000);
+    }
       });
     });
   </script>
