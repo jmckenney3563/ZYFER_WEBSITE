@@ -1313,39 +1313,28 @@
       }
     }
 
-    // ===================================================
-    // STEP 3 & 4: ASYNC POLLING LOOP & RESULTS RENDERING
-    // ===================================================
     /**
      * Intermittently queries the job completion endpoint every 2 seconds
      * @param {string} jobId - The tracking ID returned by the API
+     * @param {string} apiBaseUrl - The active target API gateway base address
      */
-    function startStatusPolling(jobId) {
+    function startStatusPolling(jobId, apiBaseUrl) {
       const pollInterval = setInterval(async () => {
         try {
-          // Check James's lightweight status checking endpoint
-          const response = await fetch(`http://localhost:3000/api/v1/jobs/${jobId}`);
+          const response = await fetch(`${apiBaseUrl}/api/v1/jobs/${jobId}`);
+          if (!response.ok) throw new Error(`Status query dropped: ${response.status}`);
           
-          if (!response.ok) {
-            throw new Error(`Status checker returned HTTP status: ${response.status}`);
-          }
-
-          const data = await response.json(); // Expected: { job_id, status, result }
-
-          // Condition A: Worker is still processing the media task inside RabbitMQ
+          const data = await response.json();
           if (data.status === 'processing' || data.status === 'queued') {
             updateProcessingStatusText("Extracting biometric vectors & validating variances...");
             return; 
           }
-
-          // Condition B: Worker completed tasks and stored metrics successfully
           if (data.status === 'completed' && data.result) {
             clearInterval(pollInterval);
             renderForensicResults(data.result);
           }
-
         } catch (error) {
-          console.error("Polling validation loop error:", error);
+          console.error("Polling resolution tracking error:", error);
           clearInterval(pollInterval);
           alert("Lost connection to the tracking socket backend pipeline.");
           setUiState(UI_STATES.IDLE);
@@ -1363,7 +1352,7 @@
 
       const scoreDisplay = document.getElementById('live-confidence-score');
       const verdictBanner = document.getElementById('verdict-banner');
-      const liveConsole = document.getElementById('zyfer-console-terminal'); // Target live console feed box if present
+      const liveConsole = document.getElementById('zyfer-console-terminal'); 
 
       const anomalyScore = parseFloat(result.anomaly_score);
       const outputPercent = (anomalyScore * 100).toFixed(2) + "%";
@@ -1375,23 +1364,18 @@
 
       // 2. Evaluate critical scoring threshold rules (Critical Threshold >= 80%)
       if (anomalyScore >= 0.80) {
-        // Toggle critical high-risk styling configurations
         if (verdictBanner) {
           verdictBanner.innerText = `ALERT VERDICT: ${result.verdict || 'SYNTHETIC_SPOOF'}`;
           verdictBanner.className = "text-center font-bold text-xs tracking-wider uppercase py-2.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 mb-2";
         }
-        
-        // Trigger red flashing pulse animation effect on your dashboard console feed if available
         if (liveConsole) {
           liveConsole.classList.add("console-critical-alert");
         }
       } else {
-        // Toggle standard nominal verified human styles
         if (verdictBanner) {
           verdictBanner.innerText = `VERDICT: ${result.verdict || 'VERIFIED_HUMAN'}`;
           verdictBanner.className = "text-center font-bold text-xs tracking-wider uppercase py-2.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2";
         }
-        
         if (liveConsole) {
           liveConsole.classList.remove("console-critical-alert");
         }
@@ -1404,39 +1388,36 @@
     document.addEventListener('DOMContentLoaded', () => {
       const actionButton = document.getElementById('start-analysis-btn');
       const fileInput = document.getElementById('media-upload-input');
-      
-      // Target the outer dashed click/drop area container inside panel-idle
       const dropZoneBox = document.querySelector('#panel-idle .border-2.border-dashed');
 
-      // FILE PICKER INTEGRATION FIX: Forward box clicks directly down to hidden input
+      // Loopback IP address target definition
+      const BACKEND_API_BASE = 'http://127.0.0.1:3000';
+
+      // 1. CLICK ZONE ROUTING: Forward box clicks natively to the hidden file input
       if (dropZoneBox && fileInput) {
         dropZoneBox.addEventListener('click', () => {
           fileInput.click();
         });
+      }
 
-   // ========================================================
-    // FILE BINDING, EVENT CHANNELS & CORE API INTERACTION
-    // ========================================================
-    document.addEventListener('DOMContentLoaded', () => {
-      const actionButton = document.getElementById('start-analysis-btn');
-      const fileInput = document.getElementById('media-upload-input');
-
-      // ============================================================
-      // PASTE THE CORRECTED LOCAL RULE HERE:
-      // ============================================================
-      const BACKEND_API_BASE = 'http://127.0.0.1:3000';
-      // ============================================================
-
-      // VISUAL CONFIRMATION: Show file selection changes inside the UI instantly
+      // 2. VISUAL CONFIRMATION LISTENER: Updates label when media is picked
       if (fileInput) {
         fileInput.addEventListener('change', () => {
           if (fileInput.files.length > 0) {
+            const textLabel = document.querySelector('#panel-idle p.text-white, #panel-idle p.font-medium, #demo-modal p.text-white');
+            if (textLabel) {
+              textLabel.innerHTML = `📁 Selected: <span class="text-cyan-400 font-mono">${fileInput.files[0].name}</span>`;
+            }
+          }
+        });
+      }
 
       if (!actionButton) {
         console.error("Initialization Error: 'start-analysis-btn' not found in DOM.");
         return;
       }
 
+      // 3. ANALYSIS INITIALIZATION CHANNEL
       actionButton.addEventListener('click', async () => {
         if (currentUiState === UI_STATES.COMPLETED) {
           setUiState(UI_STATES.IDLE);
@@ -1457,7 +1438,6 @@
         updateProcessingStatusText("Ingesting media into forensics pipeline...");
 
         try {
-          // Dynamic integration endpoint mapping
           const response = await fetch(`${BACKEND_API_BASE}/api/v1/detection/verify-media`, {
             method: 'POST',
             body: formData
@@ -1470,7 +1450,7 @@
           const data = await response.json();
           console.log("Job successfully enqueued into RabbitMQ channel. Tracking ID:", data.job_id);
           
-          // Pass base API address into polling engine context
+          // Initialize tracking loop
           startStatusPolling(data.job_id, BACKEND_API_BASE); 
 
         } catch (error) {
@@ -1478,31 +1458,6 @@
           alert("Ingestion gateway unreachable. Ensure your backend FastAPI service is bound to 0.0.0.0 and listening on port 3000.");
           setUiState(UI_STATES.IDLE);
         }
-      });
-    });
-
-    // Make sure to update your polling loop configuration to receive the base url variable:
-    function startStatusPolling(jobId, apiBaseUrl) {
-      const pollInterval = setInterval(async () => {
-        try {
-          const response = await fetch(`${apiBaseUrl}/api/v1/jobs/${jobId}`);
-          if (!response.ok) throw new Error(`Status query dropped: ${response.status}`);
-          
-          const data = await response.json();
-          if (data.status === 'processing' || data.status === 'queued') {
-            updateProcessingStatusText("Extracting biometric vectors & validating variances...");
-            return; 
-          }
-          if (data.status === 'completed' && data.result) {
-            clearInterval(pollInterval);
-            renderForensicResults(data.result);
-          }
-        } catch (error) {
-          console.error("Polling resolution tracking error:", error);
-          clearInterval(pollInterval);
-        }
-      }, 2000);
-    }
       });
     });
   </script>
