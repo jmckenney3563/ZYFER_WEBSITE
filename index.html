@@ -1287,7 +1287,9 @@
       });
       
       // Manage footer action button styling and text dynamically
-      const actionButton = document.getElementById('start-analysis-btn');
+      const actionButton = document.getElementById('start-analysis-btn') || 
+                           document.querySelector('.start-analysis-btn') || 
+                           document.querySelector('button[onclick*="Analysis"]');
       if (!actionButton) return;
 
       if (nextState === UI_STATES.PROCESSING) {
@@ -1332,7 +1334,7 @@
           
           const data = await response.json();
           if (data.status === 'processing' || data.status === 'queued') {
-            updateProcessingStatusText("Extracting biometric vectors & validating variances... ");
+            updateProcessingStatusText("Extracting biometric vectors & validating variances...");
             return; 
           }
           if (data.status === 'completed' && data.result) {
@@ -1392,7 +1394,11 @@
     // FILE BINDING, EVENT CHANNELS & CORE API INTERACTION
     // ========================================================
     document.addEventListener('DOMContentLoaded', () => {
-      const actionButton = document.getElementById('start-analysis-btn');
+      // DYNAMIC SELECTOR HUNT: Tries ID first, then falls back to class or template references
+      const actionButton = document.getElementById('start-analysis-btn') || 
+                           document.querySelector('.start-analysis-btn') || 
+                           document.querySelector('button[onclick*="Analysis"]');
+                           
       const fileInput = document.getElementById('media-upload-input');
       const dropZoneBox = document.querySelector('#panel-idle .border-2.border-dashed');
 
@@ -1419,7 +1425,7 @@
       }
 
       if (!actionButton) {
-        console.error("Initialization Error: 'start-analysis-btn' not found in DOM.");
+        console.error("Initialization Error: 'start-analysis-btn' not found in DOM via ID, Class, or Type attributes.");
         return;
       }
 
