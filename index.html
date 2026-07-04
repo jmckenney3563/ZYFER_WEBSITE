@@ -1319,6 +1319,12 @@
      * @param {string} apiBaseUrl - The active target API gateway base address
      */
     function startStatusPolling(jobId, apiBaseUrl) {
+      // VALIDATION GUARD: Prevents infinite loop execution on blank/undefined page load instances
+      if (!jobId || jobId === 'undefined') {
+        console.warn("ZYFER Sync Warning: Polling loop halted. A waiting pipeline task identifier must be specified.");
+        return;
+      }
+
       const pollInterval = setInterval(async () => {
         try {
           const response = await fetch(`${apiBaseUrl}/api/v1/jobs/${jobId}`);
@@ -1326,7 +1332,7 @@
           
           const data = await response.json();
           if (data.status === 'processing' || data.status === 'queued') {
-            updateProcessingStatusText("Extracting biometric vectors & validating variances...");
+            updateProcessingStatusText("Extracting biometric vectors & validating variances... ");
             return; 
           }
           if (data.status === 'completed' && data.result) {
@@ -1450,7 +1456,7 @@
           const data = await response.json();
           console.log("Job successfully enqueued into RabbitMQ channel. Tracking ID:", data.job_id);
           
-          // Initialize tracking loop
+          // Initialize tracking loop securely
           startStatusPolling(data.job_id, BACKEND_API_BASE); 
 
         } catch (error) {
