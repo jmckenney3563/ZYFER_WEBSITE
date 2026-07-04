@@ -176,40 +176,17 @@
             visibility: visible;
         }
         
-        /* ─── Three.js Canvas Elements ─── */
-        #hero-canvas {
+        #hero-canvas, #threat-canvas, #scan-canvas, #footer-canvas {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 0;
             pointer-events: none;
         }
+        #hero-canvas { z-index: 0; }
+        #threat-canvas { z-index: 0; }
+        #scan-canvas { z-index: 1; }
+        #footer-canvas { z-index: 0; }
         
-        #threat-canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-        
-        #scan-canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%; height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-        
-        #footer-canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-        
-        /* ─── Terminal ─── */
         .scan-terminal {
             background: rgba(5,12,24,0.9);
             border: 1px solid rgba(0,240,255,0.2);
@@ -238,7 +215,6 @@
         .terminal-line.danger { color: #ef233c; }
         .terminal-line.ok { color: #06d6a0; }
         
-        /* ─── Threat Bars ─── */
         .threat-level {
             display: flex;
             align-items: center;
@@ -261,11 +237,16 @@
             border-radius: 99px;
             transition: width 1.5s ease;
         }
+        
+        /* Modal terminal custom alert style */
+        .console-critical-alert {
+            border-color: rgba(239, 35, 60, 0.4) !important;
+            background: rgba(20, 5, 5, 0.6) !important;
+        }
     </style>
 </head>
 <body class="font-sans antialiased selection:bg-cyber-cyan selection:text-cyber-darker">
 
-    <!-- Navigation -->
     <nav class="fixed w-full z-50 glass border-b border-white/10 transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
@@ -295,7 +276,6 @@
             </div>
         </div>
         
-        <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden glass-strong border-t border-white/10">
             <div class="px-4 pt-2 pb-6 space-y-2">
                 <a href="#architecture" class="block px-3 py-2 text-slate-300 hover:text-cyber-cyan">Architecture</a>
@@ -309,16 +289,11 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden cyber-grid">
-        <!-- Animated Background Elements -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-cyber-cyan/20 rounded-full blur-[128px] animate-pulse-glow"></div>
             <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyber-purple/20 rounded-full blur-[128px] animate-pulse-glow" style="animation-delay: 2s;"></div>
-            
             <canvas id="hero-canvas"></canvas>
-            
-            <!-- Grid Overlay -->
             <div class="absolute inset-0 bg-gradient-to-b from-transparent via-cyber-dark/50 to-cyber-dark"></div>
         </div>
 
@@ -348,21 +323,20 @@
                 </button>
             </div>
 
-            <!-- Stats -->
             <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-                <div class="reveal" style="transition-delay: 0.1s;">
+                <div class="reveal">
                     <div class="text-3xl md:text-4xl font-bold text-white mb-1 font-mono" id="stat1">99.9%</div>
                     <div class="text-xs md:text-sm text-slate-500 uppercase tracking-wider">Detection Rate</div>
                 </div>
-                <div class="reveal" style="transition-delay: 0.2s;">
+                <div class="reveal">
                     <div class="text-3xl md:text-4xl font-bold text-white mb-1 font-mono" id="stat2">&lt;50ms</div>
                     <div class="text-xs md:text-sm text-slate-500 uppercase tracking-wider">Response Time</div>
                 </div>
-                <div class="reveal" style="transition-delay: 0.3s;">
+                <div class="reveal">
                     <div class="text-3xl md:text-4xl font-bold text-white mb-1 font-mono" id="stat3">4</div>
                     <div class="text-xs md:text-sm text-slate-500 uppercase tracking-wider">Modalities</div>
                 </div>
-                <div class="reveal" style="transition-delay: 0.4s;">
+                <div class="reveal">
                     <div class="text-3xl md:text-4xl font-bold text-white mb-1 font-mono" id="stat4">Zero</div>
                     <div class="text-xs md:text-sm text-slate-500 uppercase tracking-wider">Trust Required</div>
                 </div>
@@ -374,7 +348,6 @@
         </div>
     </section>
 
-    <!-- Architecture Section -->
     <section id="architecture" class="relative py-24 overflow-hidden">
         <canvas id="threat-canvas"></canvas>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -387,24 +360,19 @@
             </div>
 
             <div class="grid md:grid-cols-3 gap-8 relative">
-                <!-- Connection Lines (Desktop) -->
                 <div class="hidden md:block absolute top-1/2 left-1/3 w-1/6 h-0.5 bg-gradient-to-r from-cyber-cyan/50 to-cyber-blue/50"></div>
                 <div class="hidden md:block absolute top-1/2 right-1/3 w-1/6 h-0.5 bg-gradient-to-r from-cyber-blue/50 to-cyber-purple/50"></div>
 
-                <!-- Card 1: Data Ingestion -->
-                <div class="reveal card-hover glass-strong rounded-2xl p-8 relative overflow-hidden group" style="transition-delay: 0.1s;">
+                <div class="reveal card-hover glass-strong rounded-2xl p-8 relative overflow-hidden group">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyber-cyan to-cyber-blue"></div>
                     <div class="scanner-line hidden group-hover:block"></div>
-                    
                     <div class="w-14 h-14 rounded-xl bg-cyber-cyan/10 flex items-center justify-center mb-6 border border-cyber-cyan/30">
                         <i data-lucide="database" class="w-7 h-7 text-cyber-cyan"></i>
                     </div>
-                    
                     <h4 class="text-xl font-bold text-white mb-3">Data Ingestion Layer</h4>
                     <p class="text-slate-400 text-sm leading-relaxed mb-6">
                         Real-time ingestion from VoIP systems, video conferencing platforms, and enterprise collaboration tools with end-to-end encryption.
                     </p>
-                    
                     <ul class="space-y-2 text-sm text-slate-300">
                         <li class="flex items-center space-x-2">
                             <i data-lucide="check-circle" class="w-4 h-4 text-cyber-cyan"></i>
@@ -421,20 +389,16 @@
                     </ul>
                 </div>
 
-                <!-- Card 2: Multimodal Detection -->
-                <div class="reveal card-hover glass-strong rounded-2xl p-8 relative overflow-hidden group" style="transition-delay: 0.2s;">
+                <div class="reveal card-hover glass-strong rounded-2xl p-8 relative overflow-hidden group" style="transition-delay: 0.1s;">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyber-blue to-cyber-purple"></div>
                     <div class="scanner-line hidden group-hover:block" style="animation-delay: 1s;"></div>
-                    
                     <div class="w-14 h-14 rounded-xl bg-cyber-blue/10 flex items-center justify-center mb-6 border border-cyber-blue/30">
                         <i data-lucide="brain-circuit" class="w-7 h-7 text-cyber-blue"></i>
                     </div>
-                    
                     <h4 class="text-xl font-bold text-white mb-3">Multimodal Detection Engine</h4>
                     <p class="text-slate-400 text-sm leading-relaxed mb-6">
                         Neural networks analyze voice frequency patterns, facial micro-expressions, and behavioral biometrics simultaneously for anomaly detection.
                     </p>
-                    
                     <ul class="space-y-2 text-sm text-slate-300">
                         <li class="flex items-center space-x-2">
                             <i data-lucide="check-circle" class="w-4 h-4 text-cyber-blue"></i>
@@ -451,20 +415,16 @@
                     </ul>
                 </div>
 
-                <!-- Card 3: Correlation -->
-                <div class="reveal card-hover glass-strong rounded-2xl p-8 relative overflow-hidden group" style="transition-delay: 0.3s;">
+                <div class="reveal card-hover glass-strong rounded-2xl p-8 relative overflow-hidden group" style="transition-delay: 0.2s;">
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyber-purple to-pink-500"></div>
                     <div class="scanner-line hidden group-hover:block" style="animation-delay: 2s;"></div>
-                    
                     <div class="w-14 h-14 rounded-xl bg-cyber-purple/10 flex items-center justify-center mb-6 border border-cyber-purple/30">
                         <i data-lucide="network" class="w-7 h-7 text-cyber-purple"></i>
                     </div>
-                    
                     <h4 class="text-xl font-bold text-white mb-3">Correlation & Reinforcement</h4>
                     <p class="text-slate-400 text-sm leading-relaxed mb-6">
                         Contextual analysis engine correlates identity signals across sessions, learning from new attack vectors through reinforcement learning.
                     </p>
-                    
                     <ul class="space-y-2 text-sm text-slate-300">
                         <li class="flex items-center space-x-2">
                             <i data-lucide="check-circle" class="w-4 h-4 text-cyber-purple"></i>
@@ -484,7 +444,6 @@
         </div>
     </section>
 
-    <!-- Detection Capabilities -->
     <section id="detection" class="relative py-24 overflow-hidden" style="background: #050811;">
         <div class="absolute inset-0 cyber-grid opacity-30"></div>
         <canvas id="scan-canvas"></canvas>
@@ -531,7 +490,7 @@
                     </div>
                 </div>
                 
-                <div class="reveal relative" style="transition-delay: 0.2s;">
+                <div class="reveal relative" style="transition-delay: 0.1s;">
                     <div class="relative rounded-2xl overflow-hidden glass-strong border border-white/10">
                         <div class="flex items-center justify-between px-5 pt-4 pb-2">
                             <span class="text-xs font-mono text-slate-500">// LIVE SCAN INTERFACE</span>
@@ -554,7 +513,6 @@
                 </div>
             </div>
             
-            <!-- Threat Assessment Cards -->
             <div class="mt-20 reveal">
                 <h2 class="text-sm font-mono text-cyber-cyan uppercase tracking-widest mb-4 text-center">Threat Intelligence</h2>
                 <h3 class="text-2xl md:text-4xl font-bold text-white mb-10 text-center">Real-Time Threat Assessment</h3>
@@ -595,48 +553,11 @@
                             <span class="text-slate-500 text-xs">45%</span>
                         </div>
                     </div>
-                    <div class="glass-strong rounded-xl p-6 border border-white/10 hover:border-purple-500/40 transition-all">
-                        <div class="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mb-4">
-                            <i data-lucide="network" class="w-5 h-5 text-purple-400"></i>
-                        </div>
-                        <h4 class="text-white font-semibold mb-2">Network Topology Guard</h4>
-                        <p class="text-slate-400 text-sm mb-3">Maps live adversarial infrastructure and blocks synthetic identity injection vectors at the perimeter.</p>
-                        <div class="threat-level">
-                            <span class="text-purple-400 text-xs">ACTIVE</span>
-                            <div class="threat-bar"><div class="threat-fill" style="width:0%;background:linear-gradient(90deg,#9b5de5,#c77dff)" data-w="58%"></div></div>
-                            <span class="text-slate-500 text-xs">58%</span>
-                        </div>
-                    </div>
-                    <div class="glass-strong rounded-xl p-6 border border-white/10 hover:border-cyan-500/40 transition-all">
-                        <div class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mb-4">
-                            <i data-lucide="shield-check" class="w-5 h-5 text-cyan-400"></i>
-                        </div>
-                        <h4 class="text-white font-semibold mb-2">Zero-Trust Enforcement</h4>
-                        <p class="text-slate-400 text-sm mb-3">Every access request is cryptographically verified against biometric baselines — no implicit trust at any layer.</p>
-                        <div class="threat-level">
-                            <span class="text-cyan-400 text-xs">ENFORCED</span>
-                            <div class="threat-bar"><div class="threat-fill" style="width:0%;background:linear-gradient(90deg,#00f0ff,#9b5de5)" data-w="100%"></div></div>
-                            <span class="text-slate-500 text-xs">100%</span>
-                        </div>
-                    </div>
-                    <div class="glass-strong rounded-xl p-6 border border-white/10 hover:border-yellow-500/40 transition-all">
-                        <div class="w-10 h-10 rounded-lg bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center mb-4">
-                            <i data-lucide="zap" class="w-5 h-5 text-yellow-400"></i>
-                        </div>
-                        <h4 class="text-white font-semibold mb-2">Adaptive Response Protocol</h4>
-                        <p class="text-slate-400 text-sm mb-3">Self-healing security fabric dynamically reroutes traffic, quarantines synthetic agents, and patches exploits autonomously.</p>
-                        <div class="threat-level">
-                            <span class="text-yellow-400 text-xs">RUNNING</span>
-                            <div class="threat-bar"><div class="threat-fill" style="width:0%;background:linear-gradient(90deg,#ffd166,#06d6a0)" data-w="67%"></div></div>
-                            <span class="text-slate-500 text-xs">67%</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Technology Stack -->
     <section id="technology" class="relative py-24 cyber-grid">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 reveal">
@@ -645,25 +566,25 @@
             </div>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="reveal glass rounded-xl p-6 border border-white/5 hover:border-cyber-cyan/30 transition-all group cursor-pointer" style="transition-delay: 0.1s;">
+                <div class="reveal glass rounded-xl p-6 border border-white/5 hover:border-cyber-cyan/30 transition-all group cursor-pointer">
                     <i data-lucide="cloud" class="w-8 h-8 text-cyber-cyan mb-4 group-hover:scale-110 transition-transform"></i>
                     <h4 class="text-white font-semibold mb-2">Cloud Agnostic</h4>
                     <p class="text-slate-400 text-sm">AWS, Azure, GCP native support with Kubernetes orchestration.</p>
                 </div>
                 
-                <div class="reveal glass rounded-xl p-6 border border-white/5 hover:border-cyber-cyan/30 transition-all group cursor-pointer" style="transition-delay: 0.2s;">
+                <div class="reveal glass rounded-xl p-6 border border-white/5 hover:border-cyber-cyan/30 transition-all group cursor-pointer" style="transition-delay: 0.1s;">
                     <i data-lucide="cpu" class="w-8 h-8 text-cyber-blue mb-4 group-hover:scale-110 transition-transform"></i>
                     <h4 class="text-white font-semibold mb-2">Edge AI</h4>
                     <p class="text-slate-400 text-sm">Distributed inference nodes for sub-50ms latency requirements.</p>
                 </div>
                 
-                <div class="reveal glass rounded-xl p-6 border border-white/5 hover:border-cyber-cyan/30 transition-all group cursor-pointer" style="transition-delay: 0.3s;">
+                <div class="reveal glass rounded-xl p-6 border border-white/5 hover:border-cyber-cyan/30 transition-all group cursor-pointer" style="transition-delay: 0.2s;">
                     <i data-lucide="lock" class="w-8 h-8 text-cyber-purple mb-4 group-hover:scale-110 transition-transform"></i>
                     <h4 class="text-white font-semibold mb-2">Zero-Trust</h4>
                     <p class="text-slate-400 text-sm">Per-session verification with continuous authentication.</p>
                 </div>
                 
-                <div class="reveal glass rounded-xl p-6 border border-white/5 hover:border-cyber-cyan/30 transition-all group cursor-pointer" style="transition-delay: 0.4s;">
+                <div class="reveal glass rounded-xl p-6 border border-white/5 hover:border-cyber-cyan/30 transition-all group cursor-pointer" style="transition-delay: 0.3s;">
                     <i data-lucide="eye" class="w-8 h-8 text-pink-500 mb-4 group-hover:scale-110 transition-transform"></i>
                     <h4 class="text-white font-semibold mb-2">Explainable AI</h4>
                     <p class="text-slate-400 text-sm">LIME/SHAP integration for transparent decision making.</p>
@@ -672,7 +593,6 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
     <section class="relative py-24 overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-b from-cyber-dark to-cyber-darker"></div>
         <div class="absolute inset-0 cyber-grid opacity-20"></div>
@@ -697,7 +617,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="border-t border-white/10 bg-cyber-darker py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-8 mb-8">
@@ -731,7 +650,7 @@
             </div>
             
             <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-slate-500 text-sm">&copy; 2024 ZYFER Security Solutions. All rights reserved.</p>
+                <p class="text-slate-500 text-sm">&copy; 2026 ZYFER Security Solutions. All rights reserved.</p>
                 <div class="flex space-x-6 mt-4 md:mt-0">
                     <a href="#" class="text-slate-400 hover:text-cyber-cyan transition-colors">
                         <i data-lucide="github" class="w-5 h-5"></i>
@@ -747,63 +666,54 @@
         </div>
     </footer>
 
-    <!-- Demo Modal -->
     <div id="demo-modal" class="modal-window fixed inset-0 z-[60] flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-cyber-darker/90 backdrop-blur-sm" onclick="closeDemoModal()"></div>
-    <div class="relative glass-strong rounded-2xl p-8 max-w-2xl w-full border border-cyber-cyan/30">
-        <button onclick="closeDemoModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-            <i data-lucide="x" class="w-6 h-6"></i>
-        </button>
-        
-        <h3 class="text-2xl font-bold text-white mb-4">Interactive Demo</h3>
-        <p class="text-slate-400 mb-6">Experience ZYFER's detection capabilities in real-time. Upload a sample or use our pre-configured test scenarios.</p>
-        
-        <input type="file" id="media-upload-input" accept="video/mp4,audio/wav,audio/webm,audio/mpeg,audio/x-wav,image/png,image/jpeg,image/jpg" class="hidden" />
+        <div class="absolute inset-0 bg-cyber-darker/90 backdrop-blur-sm" onclick="closeDemoModal()"></div>
+        <div class="relative glass-strong rounded-2xl p-8 max-w-2xl w-full border border-cyber-cyan/30">
+            <button onclick="closeDemoModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            
+            <h3 class="text-2xl font-bold text-white mb-4">Interactive Demo</h3>
+            <p class="text-slate-400 mb-6">Experience ZYFER's detection capabilities in real-time. Upload a sample or use our pre-configured test scenarios.</p>
+            
+            <input type="file" id="media-upload-input" accept="video/mp4,audio/wav,audio/webm,audio/mpeg,audio/x-wav,image/png,image/jpeg,image/jpg" class="hidden" />
 
-        <div id="panel-idle" class="demo-panel">
-            <div onclick="document.getElementById('media-upload-input').click()" class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center hover:border-cyber-cyan/50 transition-colors cursor-pointer group mb-6">
-                <div class="flex flex-col items-center gap-3">
-                    <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-cyber-cyan/10 group-hover:text-cyber-cyan transition-colors">☁️</div>
-                    <p class="text-white font-medium">Drop your assets here or click to browse</p>
-                    <p class="text-slate-500 text-xs">Supports PNG, JPEG, MP4, WAV, MP3, WEBM (Max 100MB)</p>
+            <div id="panel-idle" class="demo-panel">
+                <div class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center hover:border-cyber-cyan/50 transition-colors cursor-pointer group mb-6">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-cyber-cyan/10 group-hover:text-cyber-cyan transition-colors">☁️</div>
+                        <p class="text-white font-medium">Drop your assets here or click to browse</p>
+                        <p class="text-slate-500 text-xs">Supports PNG, JPEG, MP4, WAV, MP3, WEBM (Max 100MB)</p>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="panel-processing" class="demo-panel hidden" style="display: none;">
-            <div class="flex flex-col items-center justify-center py-8 text-center">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyber-cyan mb-4"></div>
-                <p id="processing-status-text" class="text-cyan-400 font-mono text-sm">Ingesting media into forensics pipeline...</p>
-            </div>
-        </div>
-
-        <div id="panel-completed" class="demo-panel hidden" style="display: none;">
-            <div class="glass-nested rounded-xl p-6 border border-slate-800 mb-6">
-                <div id="verdict-banner" class="text-center font-bold text-xs tracking-wider uppercase py-2.5 rounded-lg mb-4"></div>
-                <div class="flex items-center justify-between border-b border-slate-800/50 pb-3 mb-3">
-                    <span class="text-slate-400 text-sm">Anomaly Vector Metric:</span>
-                    <span id="live-confidence-score" class="font-mono text-white font-bold">0.00%</span>
-                </div>
-                <div id="zyfer-console-terminal" class="bg-black/40 rounded-lg p-4 font-mono text-xs text-slate-300 max-h-[160px] overflow-y-auto">
-                    <span class="text-cyan-500">&gt;</span> Forensic anomaly distribution verification pass completed.
+            <div id="panel-processing" class="demo-panel hidden" style="display: none;">
+                <div class="flex flex-col items-center justify-center py-8 text-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyber-cyan mb-4"></div>
+                    <p id="processing-status-text" class="text-cyan-400 font-mono text-sm">Ingesting media into forensics pipeline...</p>
                 </div>
             </div>
-        </div>
-        
-        <div class="mt-6 flex justify-end space-x-4">
-            <button onclick="closeDemoModal()" class="px-6 py-2 text-slate-400 hover:text-white transition-colors">Cancel</button>
-            <button id="start-analysis-btn" class="px-6 py-2 bg-cyber-cyan text-cyber-darker font-semibold rounded-lg hover:shadow-lg hover:shadow-cyber-cyan/30 transition-all">Start Analysis</button>
+
+            <div id="panel-completed" class="demo-panel hidden" style="display: none;">
+                <div class="glass-nested rounded-xl p-6 border border-slate-800 mb-6">
+                    <div id="verdict-banner" class="text-center font-bold text-xs tracking-wider uppercase py-2.5 rounded-lg mb-4"></div>
+                    <div class="flex items-center justify-between border-b border-slate-800/50 pb-3 mb-3">
+                        <span class="text-slate-400 text-sm">Anomaly Vector Metric:</span>
+                        <span id="live-confidence-score" class="font-mono text-white font-bold">0.00%</span>
+                    </div>
+                    <div id="zyfer-console-terminal" class="bg-black/40 rounded-lg p-4 font-mono text-xs text-slate-300 max-h-[160px] overflow-y-auto border border-slate-800">
+                        <span class="text-cyan-500">&gt;</span> Forensic anomaly distribution verification pass completed.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-end space-x-4">
+                <button onclick="closeDemoModal()" class="px-6 py-2 text-slate-400 hover:text-white transition-colors">Cancel</button>
+                <button id="start-analysis-btn" class="px-6 py-2 bg-cyber-cyan text-cyber-darker font-semibold rounded-lg hover:shadow-lg hover:shadow-cyber-cyan/30 transition-all">Start Analysis</button>
+            </div>
         </div>
     </div>
-</div>
-        </div>
-        
-        <div class="mt-6 flex justify-end space-x-4">
-            <button onclick="closeDemoModal()" class="px-6 py-2 text-slate-400 hover:text-white transition-colors">Cancel</button>
-            <button id="start-analysis-btn" class="px-6 py-2 bg-cyber-cyan text-cyber-darker font-semibold rounded-lg hover:shadow-lg hover:shadow-cyber-cyan/30 transition-all">Start Analysis</button>
-        </div>
-    </div>
-</div>
 
     <script>
         // Initialize Lucide Icons
@@ -818,13 +728,12 @@
         // Modal Controls
         function openDemoModal() {
             document.getElementById('demo-modal').classList.add('active');
+            setUiState(UI_STATES.IDLE);
         }
         
         function closeDemoModal() {
             document.getElementById('demo-modal').classList.remove('active');
         }
-        
-        // Particle Animation handled by Three.js hero-canvas
         
         // Scroll Animations
         function revealOnScroll() {
@@ -851,8 +760,6 @@
             }
         }
         
-        // Analysis Log Animation handled by Terminal Typewriter
-        
         // Demo Interaction
         function activateDemo(type) {
             const output = document.getElementById('terminal-output');
@@ -872,20 +779,6 @@
             }
         }
         
-        // Counter Animation
-        function animateCounters() {
-            // Simple animation for the stats
-            const stats = ['99.9%', '<50ms', '4', 'Zero'];
-            const elements = ['stat1', 'stat2', 'stat3', 'stat4'];
-            
-            elements.forEach((id, idx) => {
-                const el = document.getElementById(id);
-                if (el && el.classList.contains('active')) {
-                    el.style.opacity = 1;
-                }
-            });
-        }
-        
         // Event Listeners
         window.addEventListener('scroll', () => {
             revealOnScroll();
@@ -894,8 +787,6 @@
         
         window.addEventListener('load', () => {
             revealOnScroll();
-            
-            // Add active class to stats for animation
             setTimeout(() => {
                 document.querySelectorAll('.reveal').forEach(el => el.classList.add('active'));
             }, 500);
@@ -912,9 +803,7 @@
             });
         });
 
-        // ═══════════════════════════════════════
-        // HERO CANVAS — Three.js Threat Network
-        // ═══════════════════════════════════════
+        // 3D Canvas Visualizer Engines (Three.js Wireframe Networks)
         (function() {
             const canvas = document.getElementById('hero-canvas');
             if (!canvas) return;
@@ -1006,9 +895,6 @@
             const pLight = new THREE.PointLight(0x00f0ff, 2, 50);
             pLight.position.set(0, 0, 10);
             scene.add(pLight);
-            const pLight2 = new THREE.PointLight(0x9b5de5, 1.5, 40);
-            pLight2.position.set(10, 5, 5);
-            scene.add(pLight2);
 
             let mouse = { x: 0, y: 0 };
             window.addEventListener('mousemove', e => {
@@ -1038,9 +924,7 @@
             animate();
         })();
 
-        // ═══════════════════════════════════════
-        // THREAT-VIZ CANVAS — Animated Hex Grid
-        // ═══════════════════════════════════════
+        // Hex Canvas Engine
         (function() {
             const canvas = document.getElementById('threat-canvas');
             if (!canvas) return;
@@ -1093,9 +977,7 @@
             animate();
         })();
 
-        // ═══════════════════════════════════════
-        // SCAN CANVAS — 3D Radar / Topology Map
-        // ═══════════════════════════════════════
+        // Radar Mesh Visualizer
         (function() {
             const canvas = document.getElementById('scan-canvas');
             if (!canvas) return;
@@ -1146,17 +1028,8 @@
                 scene.add(bMesh);
                 blips.push({ mesh: bMesh, angle, dist, phase: Math.random() * Math.PI * 2, visible: false });
             }
-            blips.slice(0, 4).forEach(b => {
-                const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 4, 8), new THREE.MeshBasicMaterial({ color: 0xef233c, transparent: true, opacity: 0.3 }));
-                beam.position.copy(b.mesh.position); beam.position.y = 2;
-                scene.add(beam);
-            });
 
             scene.add(new THREE.AmbientLight(0x112244, 2));
-            const pL = new THREE.PointLight(0x00f0ff, 3, 30);
-            pL.position.set(0, 6, 0);
-            scene.add(pL);
-
             let sweepAngle = 0;
             function animate() {
                 requestAnimationFrame(animate);
@@ -1173,70 +1046,7 @@
             animate();
         })();
 
-        // ═══════════════════════════════════════
-        // FOOTER CANVAS — DNA Helix + Shield
-        // ═══════════════════════════════════════
-        (function() {
-            const canvas = document.getElementById('footer-canvas');
-            if (!canvas) return;
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
-            camera.position.set(0, 0, 22);
-            function resize() {
-                const w = canvas.parentElement.clientWidth;
-                const h = canvas.parentElement.clientHeight;
-                renderer.setSize(w, h);
-                camera.aspect = w / h;
-                camera.updateProjectionMatrix();
-            }
-            resize();
-            window.addEventListener('resize', resize);
-
-            const helixGroup = new THREE.Group();
-            scene.add(helixGroup);
-            const helixPts1 = [], helixPts2 = [];
-            for (let i = 0; i < 80; i++) {
-                const t = (i / 80) * Math.PI * 6 - Math.PI * 3;
-                helixPts1.push(new THREE.Vector3(Math.cos(t) * 5, t * 0.8, Math.sin(t) * 5));
-                helixPts2.push(new THREE.Vector3(Math.cos(t + Math.PI) * 5, t * 0.8, Math.sin(t + Math.PI) * 5));
-            }
-            helixGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(helixPts1), new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.25 })));
-            helixGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(helixPts2), new THREE.LineBasicMaterial({ color: 0x9b5de5, transparent: true, opacity: 0.25 })));
-            for (let i = 0; i < 80; i += 8) {
-                helixGroup.add(new THREE.Line(
-                    new THREE.BufferGeometry().setFromPoints([helixPts1[i], helixPts2[i]]),
-                    new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.12 })
-                ));
-            }
-
-            const shield = new THREE.Mesh(
-                new THREE.DodecahedronGeometry(2.5, 0),
-                new THREE.MeshStandardMaterial({ color: 0x00f0ff, emissive: 0x00f0ff, emissiveIntensity: 0.2, roughness: 0.1, metalness: 0.9, wireframe: true, transparent: true, opacity: 0.4 })
-            );
-            scene.add(shield);
-            scene.add(new THREE.AmbientLight(0x112244, 2));
-            const pL = new THREE.PointLight(0x00f0ff, 2, 40);
-            pL.position.set(0, 5, 10);
-            scene.add(pL);
-
-            let t = 0;
-            function animate() {
-                requestAnimationFrame(animate);
-                t += 0.005;
-                helixGroup.rotation.y = t * 0.3;
-                shield.rotation.y = t * 0.5;
-                shield.rotation.x = t * 0.3;
-                shield.position.y = Math.sin(t) * 0.4;
-                renderer.render(scene, camera);
-            }
-            animate();
-        })();
-
-        // ═══════════════════════════════════════
-        // TERMINAL TYPEWRITER
-        // ═══════════════════════════════════════
+        // Typewriter Static Effect
         (function() {
             const output = document.getElementById('terminal-output');
             if (!output) return;
@@ -1270,15 +1080,13 @@
             setTimeout(addLine, 800);
         })();
 
-        // ═══════════════════════════════════════
-        // THREAT BAR ANIMATION ON SCROLL
-        // ═══════════════════════════════════════
+        // Scroll Threat Bar Animation
         (function() {
             const bars = document.querySelectorAll('.threat-fill');
             const obs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
                     if (e.isIntersecting) {
-                        e.target.style.width = e.target.dataset.w;
+                        e.style = e.target.style.width = e.target.dataset.w;
                         obs.unobserve(e.target);
                     }
                 });
@@ -1286,223 +1094,180 @@
             bars.forEach(b => obs.observe(b));
         })();
     </script>
+
     <script>
-    // ==========================================
-    // STEP 1: UI STATE MACHINE CONFIGURATION
-    // ==========================================
-    const UI_STATES = {
-      IDLE: 'idle',
-      PROCESSING: 'processing',
-      COMPLETED: 'completed'
-    };
+        const UI_STATES = {
+            IDLE: 'idle',
+            PROCESSING: 'processing',
+            COMPLETED: 'completed'
+        };
 
-    let currentUiState = UI_STATES.IDLE;
+        let currentUiState = UI_STATES.IDLE;
 
-    /**
-     * Toggles the visible dashboard panels and updates action button states
-     * @param {string} nextState - Target state from UI_STATES
-     */
-    function setUiState(nextState) {
-      currentUiState = nextState;
-      
-      // Toggle visibility of panels matching the naming convention: id="panel-[state]"
-      document.querySelectorAll('.demo-panel').forEach(panel => {
-        if (panel.id === `panel-${nextState}`) {
-          panel.style.display = 'block';
-          panel.classList.remove('hidden');
-        } else {
-          panel.style.display = 'none';
-          panel.classList.add('hidden');
-        }
-      });
-      
-      // Manage footer action button styling and text dynamically
-      const actionButton = document.getElementById('start-analysis-btn') || 
-                           document.querySelector('.start-analysis-btn') || 
-                           document.querySelector('button[onclick*="Analysis"]');
-      if (!actionButton) return;
+        function setUiState(nextState) {
+            currentUiState = nextState;
+            
+            document.querySelectorAll('.demo-panel').forEach(panel => {
+                if (panel.id === `panel-${nextState}`) {
+                    panel.style.display = 'block';
+                    panel.classList.remove('hidden');
+                } else {
+                    panel.style.display = 'none';
+                    panel.classList.add('hidden');
+                }
+            });
+            
+            const actionButton = document.getElementById('start-analysis-btn');
+            if (!actionButton) return;
 
-      if (nextState === UI_STATES.PROCESSING) {
-        actionButton.disabled = true;
-        actionButton.innerText = "Processing...";
-      } else if (nextState === UI_STATES.COMPLETED) {
-        actionButton.innerText = "Run New Analysis";
-        actionButton.disabled = false;
-      } else {
-        actionButton.innerText = "Start Analysis";
-        actionButton.disabled = false;
-      }
-    }
-
-    /**
-     * Updates the text inside the processing view to show active progress
-     * @param {string} text - The current status message to show the user
-     */
-    function updateProcessingStatusText(text) {
-      const statusElement = document.getElementById('processing-status-text');
-      if (statusElement) {
-        statusElement.innerText = text;
-      }
-    }
-
-    /**
-     * Intermittently queries the job completion endpoint every 2 seconds
-     * @param {string} jobId - The tracking ID returned by the API
-     * @param {string} apiBaseUrl - The active target API gateway base address
-     */
-    function startStatusPolling(jobId, apiBaseUrl) {
-      // VALIDATION GUARD: Prevents infinite loop execution on blank/undefined page load instances
-      if (!jobId || jobId === 'undefined') {
-        console.warn("ZYFER Sync Warning: Polling loop halted. A waiting pipeline task identifier must be specified.");
-        return;
-      }
-
-      const pollInterval = setInterval(async () => {
-        try {
-          const response = await fetch(`${apiBaseUrl}/api/v1/jobs/${jobId}`);
-          if (!response.ok) throw new Error(`Status query dropped: ${response.status}`);
-          
-          const data = await response.json();
-          if (data.status === 'processing' || data.status === 'queued') {
-            updateProcessingStatusText("Extracting biometric vectors & validating variances...");
-            return; 
-          }
-          if (data.status === 'completed' && data.result) {
-            clearInterval(pollInterval);
-            renderForensicResults(data.result);
-          }
-        } catch (error) {
-          console.error("Polling resolution tracking error:", error);
-          clearInterval(pollInterval);
-          alert("Lost connection to the tracking socket backend pipeline.");
-          setUiState(UI_STATES.IDLE);
-        }
-      }, 2000);
-    }
-
-    /**
-     * Unpacks final score data and injects it right into the presentation elements
-     * @param {Object} result - Inner object containing anomaly metrics
-     */
-    function renderForensicResults(result) {
-      // Transition interface views to show the complete results card panel container
-      setUiState(UI_STATES.COMPLETED);
-
-      const scoreDisplay = document.getElementById('live-confidence-score');
-      const verdictBanner = document.getElementById('verdict-banner');
-      const liveConsole = document.getElementById('zyfer-console-terminal'); 
-
-      const anomalyScore = parseFloat(result.anomaly_score);
-      const outputPercent = (anomalyScore * 100).toFixed(2) + "%";
-
-      // 1. Render numeric coefficient score text string
-      if (scoreDisplay) {
-        scoreDisplay.innerText = outputPercent;
-      }
-
-      // 2. Evaluate critical scoring threshold rules (Critical Threshold >= 80%)
-      if (anomalyScore >= 0.80) {
-        if (verdictBanner) {
-          verdictBanner.innerText = `ALERT VERDICT: ${result.verdict || 'SYNTHETIC_SPOOF'}`;
-          verdictBanner.className = "text-center font-bold text-xs tracking-wider uppercase py-2.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 mb-2";
-        }
-        if (liveConsole) {
-          liveConsole.classList.add("console-critical-alert");
-        }
-      } else {
-        if (verdictBanner) {
-          verdictBanner.innerText = `VERDICT: ${result.verdict || 'VERIFIED_HUMAN'}`;
-          verdictBanner.className = "text-center font-bold text-xs tracking-wider uppercase py-2.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2";
-        }
-        if (liveConsole) {
-          liveConsole.classList.remove("console-critical-alert");
-        }
-      }
-    }
-
-    // ========================================================
-    // FILE BINDING, EVENT CHANNELS & CORE API INTERACTION
-    // ========================================================
-    document.addEventListener('DOMContentLoaded', () => {
-      // DYNAMIC SELECTOR HUNT: Tries ID first, then falls back to class or template references
-      const actionButton = document.getElementById('start-analysis-btn') || 
-                           document.querySelector('.start-analysis-btn') || 
-                           document.querySelector('button[onclick*="Analysis"]');
-                           
-      const fileInput = document.getElementById('media-upload-input');
-      const dropZoneBox = document.querySelector('#panel-idle .border-2.border-dashed');
-
-      // Loopback IP address target definition
-      const BACKEND_API_BASE = 'http://127.0.0.1:3000';
-
-      // 1. CLICK ZONE ROUTING: Forward box clicks natively to the hidden file input
-      if (dropZoneBox && fileInput) {
-        dropZoneBox.addEventListener('click', () => {
-          fileInput.click();
-        });
-      }
-
-      // 2. VISUAL CONFIRMATION LISTENER: Updates label when media is picked
-      if (fileInput) {
-        fileInput.addEventListener('change', () => {
-          if (fileInput.files.length > 0) {
-            const textLabel = document.querySelector('#panel-idle p.text-white, #panel-idle p.font-medium, #demo-modal p.text-white');
-            if (textLabel) {
-              textLabel.innerHTML = `📁 Selected: <span class="text-cyan-400 font-mono">${fileInput.files[0].name}</span>`;
+            if (nextState === UI_STATES.PROCESSING) {
+                actionButton.disabled = true;
+                actionButton.innerText = "Processing...";
+            } else if (nextState === UI_STATES.COMPLETED) {
+                actionButton.innerText = "Run New Analysis";
+                actionButton.disabled = false;
+            } else {
+                actionButton.innerText = "Start Analysis";
+                actionButton.disabled = false;
             }
-          }
+        }
+
+        function updateProcessingStatusText(text) {
+            const statusElement = document.getElementById('processing-status-text');
+            if (statusElement) {
+                statusElement.innerText = text;
+            }
+        }
+
+        function startStatusPolling(jobId, apiBaseUrl) {
+            if (!jobId || jobId === 'undefined') {
+                console.warn("ZYFER Sync Warning: Polling loop halted. Stale ID token passed.");
+                return;
+            }
+
+            const pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${apiBaseUrl}/api/v1/jobs/${jobId}`);
+                    if (!response.ok) throw new Error(`Status query dropped: ${response.status}`);
+                    
+                    const data = await response.json();
+                    if (data.status === 'processing' || data.status === 'queued') {
+                        updateProcessingStatusText("Extracting biometric vectors & validating variances...");
+                        return; 
+                    }
+                    if (data.status === 'completed' && data.result) {
+                        clearInterval(pollInterval);
+                        renderForensicResults(data.result);
+                    }
+                } catch (error) {
+                    console.error("Polling resolution tracking error:", error);
+                    clearInterval(pollInterval);
+                    alert("Lost connection to the tracking socket backend pipeline.");
+                    setUiState(UI_STATES.IDLE);
+                }
+            }, 2000);
+        }
+
+        function renderForensicResults(result) {
+            setUiState(UI_STATES.COMPLETED);
+
+            const scoreDisplay = document.getElementById('live-confidence-score');
+            const verdictBanner = document.getElementById('verdict-banner');
+            const liveConsole = document.getElementById('zyfer-console-terminal'); 
+
+            const anomalyScore = parseFloat(result.anomaly_score || result.risk_score || 0.0);
+            const outputPercent = (anomalyScore * 100).toFixed(2) + "%";
+
+            if (scoreDisplay) {
+                scoreDisplay.innerText = outputPercent;
+            }
+
+            if (anomalyScore >= 0.70) {
+                if (verdictBanner) {
+                    verdictBanner.innerText = `ALERT VERDICT: ${result.verdict || 'SYNTHETIC_SPOOF'}`;
+                    verdictBanner.className = "text-center font-bold text-xs tracking-wider uppercase py-2.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 mb-2";
+                }
+                if (liveConsole) {
+                    liveConsole.classList.add("console-critical-alert");
+                }
+            } else {
+                if (verdictBanner) {
+                    verdictBanner.innerText = `VERDICT: ${result.verdict || 'VERIFIED_HUMAN'}`;
+                    verdictBanner.className = "text-center font-bold text-xs tracking-wider uppercase py-2.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2";
+                }
+                if (liveConsole) {
+                    liveConsole.classList.remove("console-critical-alert");
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const actionButton = document.getElementById('start-analysis-btn');
+            const fileInput = document.getElementById('media-upload-input');
+            const dropZoneBox = document.querySelector('#panel-idle .border-2.border-dashed');
+            const BACKEND_API_BASE = 'http://127.0.0.1:3000';
+
+            if (dropZoneBox && fileInput) {
+                dropZoneBox.addEventListener('click', () => {
+                    fileInput.click();
+                });
+            }
+
+            if (fileInput) {
+                fileInput.addEventListener('change', () => {
+                    if (fileInput.files.length > 0) {
+                        const textLabel = document.querySelector('#panel-idle p.text-white');
+                        if (textLabel) {
+                            textLabel.innerHTML = `📁 Selected: <span class="text-cyber-cyan font-mono">${fileInput.files[0].name}</span>`;
+                        }
+                    }
+                });
+            }
+
+            if (actionButton) {
+                actionButton.addEventListener('click', async () => {
+                    if (currentUiState === UI_STATES.COMPLETED) {
+                        setUiState(UI_STATES.IDLE);
+                        if (fileInput) fileInput.value = ''; 
+                        const textLabel = document.querySelector('#panel-idle p.text-white');
+                        if (textLabel) textLabel.innerText = "Drop your assets here or click to browse";
+                        return;
+                    }
+
+                    const file = fileInput ? fileInput.files[0] : null;
+                    if (!file) {
+                        alert("Please select a valid media asset file first.");
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append('media', file);
+
+                    setUiState(UI_STATES.PROCESSING);
+                    updateProcessingStatusText("Ingesting media into forensics pipeline...");
+
+                    try {
+                        const response = await fetch(`${BACKEND_API_BASE}/api/v1/detection/verify-media`, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`Gateway socket returned status code: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        console.log("Job enqueued successfully. Tracking ID:", data.job_id);
+                        startStatusPolling(data.job_id, BACKEND_API_BASE); 
+
+                    } catch (error) {
+                        console.error("ZYFER Integration Network Error:", error);
+                        alert("Ingestion gateway unreachable. Ensure your backend FastAPI service is bound to 0.0.0.0 and listening on port 3000.");
+                        setUiState(UI_STATES.IDLE);
+                    }
+                });
+            }
         });
-      }
-
-      if (!actionButton) {
-        console.error("Initialization Error: 'start-analysis-btn' not found in DOM via ID, Class, or Type attributes.");
-        return;
-      }
-
-      // 3. ANALYSIS INITIALIZATION CHANNEL
-      actionButton.addEventListener('click', async () => {
-        if (currentUiState === UI_STATES.COMPLETED) {
-          setUiState(UI_STATES.IDLE);
-          if (fileInput) fileInput.value = ''; 
-          return;
-        }
-
-        const file = fileInput ? fileInput.files[0] : null;
-        if (!file) {
-          alert("Please select a valid media asset file first.");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append('media', file);
-
-        setUiState(UI_STATES.PROCESSING);
-        updateProcessingStatusText("Ingesting media into forensics pipeline...");
-
-        try {
-          const response = await fetch(`${BACKEND_API_BASE}/api/v1/detection/verify-media`, {
-            method: 'POST',
-            body: formData
-          });
-
-          if (!response.ok) {
-            throw new Error(`Gateway socket returned status code: ${response.status}`);
-          }
-
-          const data = await response.json();
-          console.log("Job successfully enqueued into RabbitMQ channel. Tracking ID:", data.job_id);
-          
-          // Initialize tracking loop securely
-          startStatusPolling(data.job_id, BACKEND_API_BASE); 
-
-        } catch (error) {
-          console.error("ZYFER Integration Network Error:", error);
-          alert("Ingestion gateway unreachable. Ensure your backend FastAPI service is bound to 0.0.0.0 and listening on port 3000.");
-          setUiState(UI_STATES.IDLE);
-        }
-      });
-    });
-  </script>
+    </script>
 </body>
 </html>
-
