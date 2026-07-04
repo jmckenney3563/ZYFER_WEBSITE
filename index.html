@@ -760,13 +760,41 @@
         
         <input type="file" id="media-upload-input" accept="video/mp4,audio/wav,audio/webm,audio/mpeg,audio/x-wav,image/png,image/jpeg,image/jpg" class="hidden" />
 
-        <div onclick="document.getElementById('media-upload-input').click()" class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center hover:border-cyber-cyan/50 transition-colors cursor-pointer group mb-6">
-            <div class="flex flex-col items-center gap-3">
-                <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-cyber-cyan/10 group-hover:text-cyber-cyan transition-colors">☁️</div>
-                <p class="text-white font-medium">Drop your assets here or click to browse</p>
-                <p class="text-slate-500 text-xs">Supports PNG, JPEG, MP4, WAV, MP3, WEBM (Max 100MB)</p>
+        <div id="panel-idle" class="demo-panel">
+            <div onclick="document.getElementById('media-upload-input').click()" class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center hover:border-cyber-cyan/50 transition-colors cursor-pointer group mb-6">
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-cyber-cyan/10 group-hover:text-cyber-cyan transition-colors">☁️</div>
+                    <p class="text-white font-medium">Drop your assets here or click to browse</p>
+                    <p class="text-slate-500 text-xs">Supports PNG, JPEG, MP4, WAV, MP3, WEBM (Max 100MB)</p>
+                </div>
             </div>
         </div>
+
+        <div id="panel-processing" class="demo-panel hidden" style="display: none;">
+            <div class="flex flex-col items-center justify-center py-8 text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyber-cyan mb-4"></div>
+                <p id="processing-status-text" class="text-cyan-400 font-mono text-sm">Ingesting media into forensics pipeline...</p>
+            </div>
+        </div>
+
+        <div id="panel-completed" class="demo-panel hidden" style="display: none;">
+            <div class="glass-nested rounded-xl p-6 border border-slate-800 mb-6">
+                <div id="verdict-banner" class="text-center font-bold text-xs tracking-wider uppercase py-2.5 rounded-lg mb-4"></div>
+                <div class="flex items-center justify-between border-b border-slate-800/50 pb-3 mb-3">
+                    <span class="text-slate-400 text-sm">Anomaly Vector Metric:</span>
+                    <span id="live-confidence-score" class="font-mono text-white font-bold">0.00%</span>
+                </div>
+                <div id="zyfer-console-terminal" class="bg-black/40 rounded-lg p-4 font-mono text-xs text-slate-300 max-h-[160px] overflow-y-auto">
+                    <span class="text-cyan-500">&gt;</span> Forensic anomaly distribution verification pass completed.
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-6 flex justify-end space-x-4">
+            <button onclick="closeDemoModal()" class="px-6 py-2 text-slate-400 hover:text-white transition-colors">Cancel</button>
+            <button id="start-analysis-btn" class="px-6 py-2 bg-cyber-cyan text-cyber-darker font-semibold rounded-lg hover:shadow-lg hover:shadow-cyber-cyan/30 transition-all">Start Analysis</button>
+        </div>
+    </div>
 </div>
         </div>
         
